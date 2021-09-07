@@ -6,11 +6,15 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import CameraAlt from '@material-ui/icons/CameraAlt';
 import { Link, useHistory } from "react-router-dom"
+import { GoogleLogout } from 'react-google-login';
+import { useAuth } from "../../contexts/AuthContext"
 
 
 function HomeScreen() {
 
   const history = useHistory()
+  const { changeUser } = useAuth()
+
   const [openCamera, setOpenCamera] = useState(false);
 
 
@@ -24,10 +28,22 @@ function HomeScreen() {
   let descriptors = [];
   let averageDescriptor;
   let interval;
+  let closestFace = {
+    distance: 0,
+    name: null,
+    phone: null,
+    snap: null,
+    insta: null,
+  };
 
   const handleCamera = () => {
     setOpenCamera(true)
     runFaceapi()
+  }
+
+  async function logout() {
+    await changeUser(null)
+    history.push("/login")
   }
 
   const runFaceapi = async () => {
@@ -82,8 +98,16 @@ function HomeScreen() {
 
   const compareFaces = () => {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
-      let face = snapshot.val()
-      let distance = faceapi.euclideanDistance(face.descriptor, averageDescriptor)
+      let user = snapshot.val()
+      let distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
+      if (distance < closestFace.distance){
+        closestFace.distance = distance
+        closestFace.name = user.name
+        closestFace.phone = user.phone
+        closestFace.snap = user.snap
+        closestFace.insta = user.insta
+
+      }
       console.log('distance ' + distance)
     })	
   }
@@ -91,6 +115,14 @@ function HomeScreen() {
   return (
     <div className="App">
       <header className="App-header">
+
+      <GoogleLogout
+      clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"
+      buttonText="Logout"
+      onLogoutSuccess={logout}
+    >
+    </GoogleLogout>
+
       <IconButton aria-label="user" onClick={() => { handleProfile() }}>
         <AccountCircle />
       </IconButton>

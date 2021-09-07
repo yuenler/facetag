@@ -34,6 +34,8 @@ function ProfileScreen() {
   
   const [openCamera, setOpenCamera] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+
 
 
 
@@ -46,18 +48,32 @@ function ProfileScreen() {
   }
 
   async function handleSubmit(e) {
-    // e.preventDefault()
+    e.preventDefault()
 
-    // try {
-    //   setError("")
-    //   setLoading(true)
-    //   await login(emailRef.current.value, passwordRef.current.value)
-    //   history.push("/")
-    // } catch {
-    //   setError("Failed to log in")
-    // }
+    try {
+      setError("")
+      setLoading(true)
+      saveData()
+      // await login(emailRef.current.value, passwordRef.current.value)
+    } catch {
+      setError("Failed to log in")
+    }
 
-    // setLoading(false)
+    setLoading(false)
+  }
+
+  const saveData = () => {
+    firebase.database().ref('Users/').push({
+			descriptor: averageDescriptor,
+      name: nameRef.current.value,
+      phone: phoneRef.current.value,
+      insta: instaRef.current.value,
+      snap: snapRef.current.value,
+		  },
+		  (error) => {
+				console.log(error);
+		  } 
+		  );
   }
 
 
@@ -106,7 +122,6 @@ function ProfileScreen() {
           clearInterval(interval);
           if (descriptors.length == 10){
             averageDescriptor = takeAverage(descriptors);
-            saveDescriptor(averageDescriptor);
           }
 
         }
@@ -115,16 +130,6 @@ function ProfileScreen() {
      
     }
   };
-
-  const saveDescriptor = (descriptor) => {
-    firebase.database().ref('Users/').push({
-			descriptor: descriptor,
-		  },
-		  (error) => {
-				console.log(error);
-		  } 
-		  );
-  }
 
 
   useEffect(()=>{initiateApp()}, []);
@@ -163,7 +168,7 @@ function ProfileScreen() {
           }}
         />:
         <form>
-          <text>The following inputs will be public to all Harvard College students when they scan your face.</text>
+          <text>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</text>
           <Form onSubmit={handleSubmit}>
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
@@ -186,7 +191,7 @@ function ProfileScreen() {
             </Form.Group>
             
             <BootStrapButton disabled={loading} className="w-100" type="submit">
-              Log In
+              Save Profile
             </BootStrapButton>
           </Form>
           
