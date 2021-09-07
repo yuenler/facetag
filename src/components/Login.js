@@ -9,7 +9,7 @@ const responseGoogle = response => {
   console.log(response);
 };
 
-export default function Login() {
+export default function LoginScreen() {
   const { login } = useAuth()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
