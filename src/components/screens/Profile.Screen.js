@@ -10,6 +10,9 @@ import CameraAlt from '@material-ui/icons/CameraAlt';
 import * as faceapi from 'face-api.js';
 import { Link, useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
+import { useAuth } from "../../contexts/AuthContext"
+
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -21,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
 function ProfileScreen() {
   const classes = useStyles();
   const history = useHistory()
-
+  const { currentUser } = useAuth()
+  console.log(currentUser)
   const webcamRef = useRef(null);
   const nameRef = useRef()
   const phoneRef = useRef()
@@ -35,6 +39,7 @@ function ProfileScreen() {
   const [openCamera, setOpenCamera] = useState(false);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  
 
 
 
@@ -44,7 +49,7 @@ function ProfileScreen() {
   }
 
   function handleHome() {
-    history.push("/home")
+    history.push("/")
   }
 
   async function handleSubmit(e) {
@@ -54,9 +59,8 @@ function ProfileScreen() {
       setError("")
       setLoading(true)
       saveData()
-      // await login(emailRef.current.value, passwordRef.current.value)
     } catch {
-      setError("Failed to log in")
+      setError("Failed to save data. Please try again.")
     }
 
     setLoading(false)
@@ -79,8 +83,12 @@ function ProfileScreen() {
 
   const handleCamera = () => {
     setOpenCamera(true)
+  }
+
+  const handleRunFaceapi = () => {
     runFaceapi()
   }
+
 
   const runFaceapi = async () => {
     await faceapi.loadSsdMobilenetv1Model('/models');
@@ -153,6 +161,7 @@ function ProfileScreen() {
       </Button>
 
       {openCamera?
+        <div>
         <Webcam
           ref={webcamRef}
           style={{
@@ -166,10 +175,24 @@ function ProfileScreen() {
             width: 300,
             height: 300,
           }}
-        />:
+        />
+
+        <text>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are holding the phone not at an angle. When you are ready, click the button below. </text>
+        <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        onClick={() => handleRunFaceapi() }
+      >
+        Run facial recognition
+      </Button>
+      </div>
+        :
         <form>
           <text>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</text>
           <Form onSubmit={handleSubmit}>
+          {error && <Alert variant="danger">{error}</Alert>}
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
               <Form.Control ref={nameRef} required />

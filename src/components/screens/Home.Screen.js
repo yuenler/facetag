@@ -8,14 +8,29 @@ import CameraAlt from '@material-ui/icons/CameraAlt';
 import { Link, useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+}));
 
 function HomeScreen() {
 
   const history = useHistory()
   const { changeUser } = useAuth()
-
+  const classes = useStyles();
   const [openCamera, setOpenCamera] = useState(false);
+  const [prediction, setPrediction] = useState("");
+  const [closestDistance, setClosestDistance] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [snap, setSnap] = useState("");
+  const [insta, setInsta] = useState("");
+  const webcamRef = useRef(null);
 
 
   function handleProfile() {
@@ -23,21 +38,16 @@ function HomeScreen() {
   }
 
 
-  const webcamRef = useRef(null);
 
   let descriptors = [];
   let averageDescriptor;
   let interval;
-  let closestFace = {
-    distance: 0,
-    name: null,
-    phone: null,
-    snap: null,
-    insta: null,
-  };
 
   const handleCamera = () => {
     setOpenCamera(true)
+  }
+
+  const handleRunFaceapi = () => {
     runFaceapi()
   }
 
@@ -84,6 +94,8 @@ function HomeScreen() {
         descriptors.push(detectionWithDescriptors.descriptor);
         if (descriptors.length >= 10){
           clearInterval(interval);
+          setOpenCamera(false)
+          setPrediction("Processing results...")
           if (descriptors.length == 10){
             averageDescriptor = takeAverage(descriptors);
             compareFaces();
@@ -100,15 +112,14 @@ function HomeScreen() {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
-      if (distance < closestFace.distance){
-        closestFace.distance = distance
-        closestFace.name = user.name
-        closestFace.phone = user.phone
-        closestFace.snap = user.snap
-        closestFace.insta = user.insta
-
+      if (distance < closestDistance){
+        setClosestDistance(distance)
+        setName(user.name)
+        setPhone(user.phone)
+        setSnap(user.snap)
+        setInsta(user.insta)
+        setPrediction('Closest face: ')
       }
-      console.log('distance ' + distance)
     })	
   }
 
@@ -131,6 +142,7 @@ function HomeScreen() {
         <CameraAlt />
       </IconButton>
       {openCamera?
+        <div>
         <Webcam
           ref={webcamRef}
           style={{
@@ -144,8 +156,27 @@ function HomeScreen() {
             width: 300,
             height: 300,
           }}
-        />: null
+        />
+        <text>Hold the phone so that the person's face takes up the majority of the screen, but no parts of their head is off screen. Make sure you have good lighting and that you are holding the camera not at an angle. When you are ready, click the button below. </text>
+
+        <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        onClick={() => handleRunFaceapi() }
+      >
+        Run facial recognition
+      </Button>
+      </div>
+        : null
       }
+      <text>{prediction}</text>
+      <text>{name}</text>
+      <text>{phone}</text>
+      <text>{snap}</text>
+      <text>{insta}</text>
+
       </header>
     </div>
 
