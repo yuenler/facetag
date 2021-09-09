@@ -1,6 +1,6 @@
 {
-  "homepage": "http://yuenler.github.io/nametag",
-  "name": "nametag-react",
+  "homepage": "https://yuenler.github.io/nametag",
+  "name": "nametag",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,6 +19,7 @@
     "canvas": "^2.8.0",
     "face-api.js": "^0.22.2",
     "firebase": "^8.10.0",
+    "gh-pages": "^3.2.3",
     "p5": "^1.4.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
@@ -37,7 +38,6 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
-
   },
   "eslintConfig": {
     "extends": [
