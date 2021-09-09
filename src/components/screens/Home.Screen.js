@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 function HomeScreen() {
 
   const history = useHistory()
-  const { changeUser } = useAuth()
+  const { changeUser, currentUser } = useAuth()
   const classes = useStyles();
   const [prediction, setPrediction] = useState("");
   const [predictionOut, setPredictionOut] = useState(false);
@@ -38,6 +38,13 @@ function HomeScreen() {
     history.push("/profile")
   }
 
+  const checkProfileExistence = () => {
+    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+      if (!snapshot.exists()){
+         history.push("/profile")
+      }
+   });
+  }
 
 
   let descriptors = [];
@@ -125,6 +132,10 @@ function HomeScreen() {
     })	
   }
 
+  useEffect(() => {
+    checkProfileExistence()
+  });
+
   return (
     <div className="App">
       <header className="App-header">
@@ -144,7 +155,7 @@ function HomeScreen() {
         startIcon={<AccountCircle />}
         onClick={() => handleProfile() }
       >
-        Profile
+        Edit Profile
       </Button>
 
         <div>
