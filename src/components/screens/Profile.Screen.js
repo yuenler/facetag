@@ -68,8 +68,9 @@ function ProfileScreen() {
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
+  const NUM_READINGS = 5;
 
-  const retrieveData = () => {
+  function retrieveData() {
     firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
       if (snapshot.exists()){
          setAverageDescriptor(snapshot.val().descriptor)
@@ -79,7 +80,9 @@ function ProfileScreen() {
          setSnap(snapshot.val().snap)
       }
    });
+
   }
+
 
   function handleHome() {
     history.push("/")
@@ -126,6 +129,7 @@ function ProfileScreen() {
     setStartedRunning(true)
     setButtonText("Running facial recognition...")
     runFaceapi()
+    
   }
 
 
@@ -133,7 +137,9 @@ function ProfileScreen() {
     await faceapi.loadSsdMobilenetv1Model('/models');
     await faceapi.loadFaceLandmarkModel('/models');
     await faceapi.loadFaceRecognitionModel('/models');
-    interval = setInterval(detect, 500);
+    while (descriptors.length <= NUM_READINGS){
+      await detect()
+    }
   };
 
   const takeAverage = (descriptors) => {
@@ -166,10 +172,10 @@ function ProfileScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= 5){
+        if (descriptors.length >= NUM_READINGS){
           clearInterval(interval);
           setButtonText("Run facial recognition")
-          if (descriptors.length == 5){
+          if (descriptors.length == NUM_READINGS){
             let descriptor = takeAverage(descriptors);
             setAverageDescriptor(descriptor)
             setDoneRunning(true)
@@ -232,9 +238,12 @@ function ProfileScreen() {
       >
         {buttonText}
       </Button>
+
+      {!startedRunning?
       <IconButton onClick={handleClick}>
         <FlipCameraIos/>
-        </IconButton>
+        </IconButton>: null
+      }
 
       </div>
       

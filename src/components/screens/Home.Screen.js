@@ -54,9 +54,10 @@ function HomeScreen() {
   const [phone, setPhone] = useState("");
   const [snap, setSnap] = useState("");
   const [insta, setInsta] = useState("");
+  const [startedRunning, setStartedRunning] = useState(false)
   const phoneSMS = "sms:" + phone;
   const webcamRef = useRef(null);
-
+  const NUM_READINGS = 1;
 
   function handleProfile() {
     history.push("/profile")
@@ -71,6 +72,12 @@ function HomeScreen() {
    });
   }
 
+  async function loadModels() {
+    await faceapi.loadSsdMobilenetv1Model('/models');
+    await faceapi.loadFaceLandmarkModel('/models');
+    await faceapi.loadFaceRecognitionModel('/models');
+  }
+
 
   let descriptors = [];
   let averageDescriptor;
@@ -78,6 +85,7 @@ function HomeScreen() {
 
   const handleRunFaceapi = () => {
     setButtonText("Running facial recognition...");
+    setStartedRunning(true)
     setName("");
     setPhone("");
     setSnap("");
@@ -92,10 +100,9 @@ function HomeScreen() {
   }
 
   const runFaceapi = async () => {
-    await faceapi.loadSsdMobilenetv1Model('/models');
-    await faceapi.loadFaceLandmarkModel('/models');
-    await faceapi.loadFaceRecognitionModel('/models');
-    interval = setInterval(detect, 500);
+    while (descriptors.length <= NUM_READINGS){
+      await detect()
+    }
   };
 
   const takeAverage = (descriptors) => {
@@ -127,14 +134,16 @@ function HomeScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= 2){
+        console.log('hi')
+        if (descriptors.length >= NUM_READINGS){
           clearInterval(interval);
           // setOpenCamera(false)
           setButtonText("Run facial recognition")
-          if (descriptors.length == 2){
+          if (descriptors.length == NUM_READINGS){
             setPrediction("Processing results...\nIf no results appear within 10 seconds, this means that the scanned face does not match any face in our database.")
             averageDescriptor = takeAverage(descriptors);
             compareFaces();
+            setStartedRunning(false)
           }
 
         }
@@ -164,6 +173,7 @@ function HomeScreen() {
 
   useEffect(() => {
     checkProfileExistence()
+    loadModels()
   });
 
   return (
@@ -216,9 +226,11 @@ function HomeScreen() {
             >
             {buttonText}
           </Button>
-          <IconButton onClick={handleClick}>
+          {!startedRunning?
+      <IconButton onClick={handleClick}>
         <FlipCameraIos/>
-        </IconButton>
+        </IconButton>: null
+      }
 
       </div>
       <hr/>
