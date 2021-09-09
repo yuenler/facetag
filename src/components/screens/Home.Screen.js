@@ -11,6 +11,8 @@ import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+// document.getElementsByTagName("body")[0].style.backgroundColor = "black";
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -31,6 +33,7 @@ function HomeScreen() {
   const [phone, setPhone] = useState("");
   const [snap, setSnap] = useState("");
   const [insta, setInsta] = useState("");
+  const phoneSMS = "sms:" + phone;
   const webcamRef = useRef(null);
 
 
@@ -52,7 +55,11 @@ function HomeScreen() {
   let interval;
 
   const handleRunFaceapi = () => {
-    setButtonText("Running facial recognition...")
+    setButtonText("Running facial recognition...");
+    setName("");
+    setPhone("");
+    setSnap("");
+    setInsta("");
     runFaceapi()
   }
 
@@ -137,15 +144,15 @@ function HomeScreen() {
   });
 
   return (
-    <div className="App">
+    <div className="App" style={{textAlign: 'center', /*backgroundColor: "black", color: "white" */}}>
       <header className="App-header">
 
       <GoogleLogout
-      clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"
-      buttonText="Logout"
-      onLogoutSuccess={logout}
-    >
-    </GoogleLogout>
+        clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"
+        buttonText="Logout"
+        onLogoutSuccess={logout}
+      >
+      </GoogleLogout>
 
       <Button
         variant="contained"
@@ -158,50 +165,51 @@ function HomeScreen() {
         Edit Profile
       </Button>
 
+      <div>
         <div>
-          <div>
-        <Webcam
-          ref={webcamRef}
-          style={{
-            // position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 300,
-            height: 300,
-          }}
-        />
+          <Webcam
+            ref={webcamRef}
+            style={{
+              // position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              zindex: 9,
+              width: 300,
+              height: 300,
+            }}
+          />
         </div>
         <div>
-        <p>Hold the phone so that the person's face takes up the majority of the screen, but no parts of their head is off screen. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button below. </p>
-            </div>
-          <div>
-        <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        onClick={() => handleRunFaceapi() }
-      >
-        {buttonText}
-      </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            className={classes.button}
+            onClick={() => handleRunFaceapi() }
+            >
+            {buttonText}
+          </Button>
+        </div>
+        <div>
+          <p>Hold the phone so that the person's face takes up the majority of the screen, but no part of their head is off screen. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button above. </p>
+        </div>
       </div>
-      </div>
-      
-      
+      <hr/>
       <p>{prediction}</p>
+      <hr/>
       {predictionOut?
-      <div>
-      <p>{"Name: " + name}</p>
-      <p>{"Phone number: " + phone}</p>
-      <p>{"Snapchat: " + snap}</p>
-      <p>{"Instagram: " + insta}</p>
-      </div>
-      : null
+        <div style={{border: "2px solid black", backgroundColor: "lightgray", paddingTop: "10px"}}>
+          <p>{"Name: " + name}</p>
+          <p>Phone number: <a href={phoneSMS}>{phone}</a></p>
+          <p>{"Snapchat: " + snap}</p>
+          <p>{"Instagram: " + insta}</p>
+        </div>
+        : null
       }
+      <br/>
       </header>
     </div>
 
