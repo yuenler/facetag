@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import firebase from "firebase";
-import { Form, Button as BootStrapButton, Card, Alert } from "react-bootstrap"
+import { Form, Card, Alert } from "react-bootstrap"
 import Webcam from "react-webcam";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -25,7 +25,6 @@ function ProfileScreen() {
   const classes = useStyles();
   const history = useHistory()
   const { currentUser } = useAuth()
-  console.log(currentUser)
   const webcamRef = useRef(null);
   const nameRef = useRef()
   const phoneRef = useRef()
@@ -33,41 +32,27 @@ function ProfileScreen() {
   const snapRef = useRef()
 
   let descriptors = [];
-  let averageDescriptor;
   let interval;
   
   const [openCamera, setOpenCamera] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  
+  const [buttonText, setButtonText] = useState("Run facial recognition")
+  const [cameraText, setCameraText] = useState("Open Camera to scan face")
+  const [averageDescriptor, setAverageDescriptor] = useState(null)
 
 
 
-
-  const initiateApp = () => {
-    runFaceapi()
-  }
 
   function handleHome() {
     history.push("/")
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-
-    try {
-      setError("")
-      setLoading(true)
-      saveData()
-    } catch {
-      setError("Failed to save data. Please try again.")
-    }
-
-    setLoading(false)
+  function handleSubmit() {
+    
+    saveData()
   }
 
   const saveData = () => {
-    firebase.database().ref('Users/').push({
+    firebase.database().ref('Users/' + currentUser.googleId).set({
 			descriptor: averageDescriptor,
       name: nameRef.current.value,
       phone: phoneRef.current.value,
@@ -82,10 +67,19 @@ function ProfileScreen() {
 
 
   const handleCamera = () => {
-    setOpenCamera(true)
+    if (openCamera) {
+      setOpenCamera(false)
+      setCameraText('Open Camera to scan face')
+    }
+    else{
+      setOpenCamera(true)
+      setCameraText('Close Camera')
+    }
+    
   }
 
   const handleRunFaceapi = () => {
+    setButtonText("Running facial recognition...")
     runFaceapi()
   }
 
@@ -94,7 +88,7 @@ function ProfileScreen() {
     await faceapi.loadSsdMobilenetv1Model('/models');
     await faceapi.loadFaceLandmarkModel('/models');
     await faceapi.loadFaceRecognitionModel('/models');
-    interval = setInterval(detect, 100);
+    interval = setInterval(checkDetect, 100);
   };
 
   const takeAverage = (descriptors) => {
@@ -114,6 +108,10 @@ function ProfileScreen() {
     return averages;
   }
 
+  const checkDetect = () => {
+      detect()
+  }
+
   const detect = async () => {
     if (
       typeof webcamRef.current !== "undefined" &&
@@ -128,8 +126,11 @@ function ProfileScreen() {
         descriptors.push(detectionWithDescriptors.descriptor);
         if (descriptors.length >= 10){
           clearInterval(interval);
+          setButtonText("Run facial recognition")
           if (descriptors.length == 10){
-            averageDescriptor = takeAverage(descriptors);
+            let descriptor = takeAverage(descriptors);
+            setAverageDescriptor(descriptor)
+
           }
 
         }
@@ -138,9 +139,6 @@ function ProfileScreen() {
      
     }
   };
-
-
-  useEffect(()=>{initiateApp()}, []);
 
   return (
     <div className="App">
@@ -157,7 +155,7 @@ function ProfileScreen() {
         startIcon={<CameraAlt />}
         onClick={() => handleCamera() }
       >
-        Scan face and run face recognition
+        {cameraText}
       </Button>
 
       {openCamera?
@@ -165,7 +163,6 @@ function ProfileScreen() {
         <Webcam
           ref={webcamRef}
           style={{
-            position: "absolute",
             marginLeft: "auto",
             marginRight: "auto",
             left: 0,
@@ -177,7 +174,7 @@ function ProfileScreen() {
           }}
         />
 
-        <text>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are holding the phone not at an angle. When you are ready, click the button below. </text>
+        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button below. </p>
         <Button
         variant="contained"
         color="primary"
@@ -185,14 +182,13 @@ function ProfileScreen() {
         className={classes.button}
         onClick={() => handleRunFaceapi() }
       >
-        Run facial recognition
+        {buttonText}
       </Button>
       </div>
         :
         <form>
-          <text>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</text>
-          <Form onSubmit={handleSubmit}>
-          {error && <Alert variant="danger">{error}</Alert>}
+          <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>
+          <Form>
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
               <Form.Control ref={nameRef} required />
@@ -200,22 +196,28 @@ function ProfileScreen() {
 
             <Form.Group id="phone">
               <Form.Label>Phone number</Form.Label>
-              <Form.Control ref={phoneRef} required />
+              <Form.Control ref={phoneRef}  />
             </Form.Group>
 
             <Form.Group id="insta">
               <Form.Label>Instagram</Form.Label>
-              <Form.Control ref={instaRef} required />
+              <Form.Control ref={instaRef}  />
             </Form.Group>
 
             <Form.Group id="snap">
               <Form.Label>Snapchat</Form.Label>
-              <Form.Control ref={snapRef} required />
+              <Form.Control ref={snapRef}  />
             </Form.Group>
             
-            <BootStrapButton disabled={loading} className="w-100" type="submit">
-              Save Profile
-            </BootStrapButton>
+            <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        onClick={() => handleSubmit() }
+      >
+        Save Profile
+      </Button>
           </Form>
           
         </form>

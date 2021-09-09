@@ -18,15 +18,26 @@ export default function LoginScreen() {
 
   async function handleLogin(res) {
       await changeUser(res.profileObj)
-      history.push("/")
+      let email = res.profileObj.email
+      var idxHarvard = email.indexOf('@college.harvard.edu');
+      if (idxHarvard == -1) {
+        alert("Please sign in using your Harvard College email address!");
+        await changeUser(null)
+        email = null
+      }
+      else{
+        history.push("/")
+      }
+      
   }
 
   return (
     <>
-      <Card>
+      <Card >
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}
+          <div style={{display: 'flex', justifyContent: 'center'}}>
               <GoogleLogin
                 clientId='686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com'
                 buttonText="Log in with Google"
@@ -36,6 +47,7 @@ export default function LoginScreen() {
                 isSignedIn={true}
 
             />
+            </div>
 
         </Card.Body>
       </Card>

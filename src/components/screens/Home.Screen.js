@@ -23,9 +23,10 @@ function HomeScreen() {
   const history = useHistory()
   const { changeUser } = useAuth()
   const classes = useStyles();
-  const [openCamera, setOpenCamera] = useState(false);
   const [prediction, setPrediction] = useState("");
-  const [closestDistance, setClosestDistance] = useState("");
+  const [predictionOut, setPredictionOut] = useState(false);
+
+  const [buttonText, setButtonText] = useState("Run facial recognition")
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [snap, setSnap] = useState("");
@@ -43,11 +44,8 @@ function HomeScreen() {
   let averageDescriptor;
   let interval;
 
-  const handleCamera = () => {
-    setOpenCamera(true)
-  }
-
   const handleRunFaceapi = () => {
+    setButtonText("Running facial recognition...")
     runFaceapi()
   }
 
@@ -92,11 +90,12 @@ function HomeScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= 10){
+        if (descriptors.length >= 5){
           clearInterval(interval);
-          setOpenCamera(false)
+          // setOpenCamera(false)
+          setButtonText("Run facial recognition")
           setPrediction("Processing results...")
-          if (descriptors.length == 10){
+          if (descriptors.length == 5){
             averageDescriptor = takeAverage(descriptors);
             compareFaces();
           }
@@ -109,16 +108,19 @@ function HomeScreen() {
   };
 
   const compareFaces = () => {
+    let closest = 1
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
-      if (distance < closestDistance){
-        setClosestDistance(distance)
+      console.log(distance)
+      if (distance < closest){
+        closest = distance
+        setPredictionOut(true)
         setName(user.name)
         setPhone(user.phone)
         setSnap(user.snap)
         setInsta(user.insta)
-        setPrediction('Closest face: ')
+        setPrediction('Closest face:')
       }
     })	
   }
@@ -134,19 +136,23 @@ function HomeScreen() {
     >
     </GoogleLogout>
 
-      <IconButton aria-label="user" onClick={() => { handleProfile() }}>
-        <AccountCircle />
-      </IconButton>
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        startIcon={<AccountCircle />}
+        onClick={() => handleProfile() }
+      >
+        Profile
+      </Button>
 
-      <IconButton aria-label="camera" onClick={() => handleCamera() }>
-        <CameraAlt />
-      </IconButton>
-      {openCamera?
         <div>
+          <div>
         <Webcam
           ref={webcamRef}
           style={{
-            position: "absolute",
+            // position: "absolute",
             marginLeft: "auto",
             marginRight: "auto",
             left: 0,
@@ -157,8 +163,11 @@ function HomeScreen() {
             height: 300,
           }}
         />
-        <text>Hold the phone so that the person's face takes up the majority of the screen, but no parts of their head is off screen. Make sure you have good lighting and that you are holding the camera not at an angle. When you are ready, click the button below. </text>
-
+        </div>
+        <div>
+        <p>Hold the phone so that the person's face takes up the majority of the screen, but no parts of their head is off screen. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button below. </p>
+            </div>
+          <div>
         <Button
         variant="contained"
         color="primary"
@@ -166,17 +175,22 @@ function HomeScreen() {
         className={classes.button}
         onClick={() => handleRunFaceapi() }
       >
-        Run facial recognition
+        {buttonText}
       </Button>
       </div>
-        : null
+      </div>
+      
+      
+      <p>{prediction}</p>
+      {predictionOut?
+      <div>
+      <p>{"Name: " + name}</p>
+      <p>{"Phone number: " + phone}</p>
+      <p>{"Snapchat: " + snap}</p>
+      <p>{"Instagram: " + insta}</p>
+      </div>
+      : null
       }
-      <text>{prediction}</text>
-      <text>{name}</text>
-      <text>{phone}</text>
-      <text>{snap}</text>
-      <text>{insta}</text>
-
       </header>
     </div>
 
