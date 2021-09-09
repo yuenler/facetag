@@ -134,9 +134,9 @@ function ProfileScreen() {
 
 
   const runFaceapi = async () => {
-    await faceapi.loadSsdMobilenetv1Model('/models');
-    await faceapi.loadFaceLandmarkModel('/models');
-    await faceapi.loadFaceRecognitionModel('/models');
+    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
+    await faceapi.loadFaceLandmarkModel('/nametag/models');
+    await faceapi.loadFaceRecognitionModel('/nametag/models');
     while (descriptors.length <= NUM_READINGS){
       await detect()
     }

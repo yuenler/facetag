@@ -95,9 +95,9 @@ function HomeScreen() {
   }
 
   const runFaceapi = async () => {
-    await faceapi.loadSsdMobilenetv1Model('/models');
-    await faceapi.loadFaceLandmarkModel('/models');
-    await faceapi.loadFaceRecognitionModel('/models');
+    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
+    await faceapi.loadFaceLandmarkModel('/nametag/models');
+    await faceapi.loadFaceRecognitionModel('/nametag/models');
     while (descriptors.length <= NUM_READINGS){
       await detect()
     }
@@ -132,7 +132,6 @@ function HomeScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptors.push(detectionWithDescriptors.descriptor);
-        console.log('hi')
         if (descriptors.length >= NUM_READINGS){
           clearInterval(interval);
           // setOpenCamera(false)
@@ -156,7 +155,6 @@ function HomeScreen() {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
-      console.log(distance)
       if (distance < closest && distance < 0.5){
         closest = distance
         setPredictionOut(true)
