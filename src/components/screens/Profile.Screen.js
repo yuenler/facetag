@@ -4,6 +4,10 @@ import { Form, Card, Alert } from "react-bootstrap"
 import Webcam from "react-webcam";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import Check from '@material-ui/icons/Check';
+import Clear from '@material-ui/icons/Clear';
+
+import Error from '@material-ui/icons/Error';
 
 import Home from '@material-ui/icons/Home';
 import CameraAlt from '@material-ui/icons/CameraAlt';
@@ -36,10 +40,9 @@ function ProfileScreen() {
   
   const [openCamera, setOpenCamera] = useState(false);
   const [buttonText, setButtonText] = useState("Run facial recognition")
-  const [cameraText, setCameraText] = useState("Open Camera to scan face")
   const [averageDescriptor, setAverageDescriptor] = useState(null)
-
-
+  const [doneRunning, setDoneRunning] = useState(false)
+  const [startedRunning, setStartedRunning] = useState(true)
 
 
   function handleHome() {
@@ -47,11 +50,14 @@ function ProfileScreen() {
   }
 
   function handleSubmit() {
-    
     saveData()
   }
 
   const saveData = () => {
+    if (nameRef.current.value === '' || averageDescriptor == null){
+      alert("Please scan your face and fill in your name.")
+    }
+    else{
     firebase.database().ref('Users/' + currentUser.googleId).set({
 			descriptor: averageDescriptor,
       name: nameRef.current.value,
@@ -63,22 +69,25 @@ function ProfileScreen() {
 				console.log(error);
 		  } 
 		  );
+      handleHome();
+      alert('Successfully saved data!')
+    }
   }
 
 
   const handleCamera = () => {
-    if (openCamera) {
-      setOpenCamera(false)
-      setCameraText('Open Camera to scan face')
-    }
-    else{
-      setOpenCamera(true)
-      setCameraText('Close Camera')
-    }
-    
+    setDoneRunning(false)
+    setStartedRunning(false)
+    setOpenCamera(true)
+  }
+
+  const handleLeaveCamera = () => {
+    setOpenCamera(false)
+    setStartedRunning(true)
   }
 
   const handleRunFaceapi = () => {
+    setStartedRunning(true)
     setButtonText("Running facial recognition...")
     runFaceapi()
   }
@@ -130,6 +139,8 @@ function ProfileScreen() {
           if (descriptors.length == 10){
             let descriptor = takeAverage(descriptors);
             setAverageDescriptor(descriptor)
+            setDoneRunning(true)
+            setStartedRunning(false)
 
           }
 
@@ -147,16 +158,11 @@ function ProfileScreen() {
         <Home />
       </IconButton>
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        startIcon={<CameraAlt />}
-        onClick={() => handleCamera() }
-      >
-        {cameraText}
-      </Button>
+      { !startedRunning?
+        <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>
+        <Clear />
+      </IconButton>: null
+      }
 
       {openCamera?
         <div>
@@ -173,9 +179,9 @@ function ProfileScreen() {
             height: 300,
           }}
         />
-
-        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button below. </p>
-        <Button
+    {!doneRunning?
+      <div>
+      <Button
         variant="contained"
         color="primary"
         size="small"
@@ -184,11 +190,48 @@ function ProfileScreen() {
       >
         {buttonText}
       </Button>
+
+      </div>
+      
+      :
+      <div>
+            <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            className={classes.button}
+            onClick={() => setOpenCamera(false) }
+          >
+            Finish
+            </Button>
+      </div>
+      }
+        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button below. </p>
+        
       </div>
         :
         <form>
           <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>
           <Form>
+     
+                <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              className={classes.button}
+              startIcon={<CameraAlt />}
+              onClick={() => handleCamera() }
+            >
+              Open Camera to scan face
+            </Button>
+
+            {
+              averageDescriptor ?
+              <Check/>:
+              <Error/>
+            }
+
+
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
               <Form.Control ref={nameRef} required />
