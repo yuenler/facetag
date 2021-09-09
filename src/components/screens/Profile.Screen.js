@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import firebase from "firebase";
-import { Form, Card, Alert } from "react-bootstrap"
+import { Form } from "react-bootstrap"
 import Webcam from "react-webcam";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -13,7 +13,7 @@ import Error from '@material-ui/icons/Error';
 import Home from '@material-ui/icons/Home';
 import CameraAlt from '@material-ui/icons/CameraAlt';
 import * as faceapi from 'face-api.js';
-import { Link, useHistory } from "react-router-dom"
+import {useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import { useAuth } from "../../contexts/AuthContext"
 
@@ -175,7 +175,7 @@ function ProfileScreen() {
         if (descriptors.length >= NUM_READINGS){
           clearInterval(interval);
           setButtonText("Run facial recognition")
-          if (descriptors.length == NUM_READINGS){
+          if (descriptors.length === NUM_READINGS){
             let descriptor = takeAverage(descriptors);
             setAverageDescriptor(descriptor)
             setDoneRunning(true)
@@ -264,7 +264,7 @@ function ProfileScreen() {
         
       </div>
         :
-        <form>
+        <div>
           <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>
           <Form>
      
@@ -285,7 +285,7 @@ function ProfileScreen() {
               <Error/>
             }
 
-
+            <div>
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
               <Form.Control ref={nameRef} defaultValue = {name} placeholder="John Harvard" required />
@@ -305,6 +305,7 @@ function ProfileScreen() {
               <Form.Label>Snapchat</Form.Label>
               <Form.Control placeholder="username" defaultValue = {snap} ref={snapRef}  />
             </Form.Group>
+            </div>
             
             <Button
         variant="contained"
@@ -317,7 +318,7 @@ function ProfileScreen() {
       </Button>
           </Form>
           
-        </form>
+        </div>
       }
       </header>
     </div>

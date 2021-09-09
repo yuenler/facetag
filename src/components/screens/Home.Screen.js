@@ -4,8 +4,7 @@ import Webcam from "react-webcam";
 import * as faceapi from 'face-api.js';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import CameraAlt from '@material-ui/icons/CameraAlt';
-import { Link, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
@@ -72,12 +71,6 @@ function HomeScreen() {
    });
   }
 
-  async function loadModels() {
-    await faceapi.loadSsdMobilenetv1Model('/models');
-    await faceapi.loadFaceLandmarkModel('/models');
-    await faceapi.loadFaceRecognitionModel('/models');
-  }
-
 
   let descriptors = [];
   let averageDescriptor;
@@ -100,6 +93,9 @@ function HomeScreen() {
   }
 
   const runFaceapi = async () => {
+    await faceapi.loadSsdMobilenetv1Model('/models');
+    await faceapi.loadFaceLandmarkModel('/models');
+    await faceapi.loadFaceRecognitionModel('/models');
     while (descriptors.length <= NUM_READINGS){
       await detect()
     }
@@ -139,7 +135,7 @@ function HomeScreen() {
           clearInterval(interval);
           // setOpenCamera(false)
           setButtonText("Run facial recognition")
-          if (descriptors.length == NUM_READINGS){
+          if (descriptors.length === NUM_READINGS){
             setPrediction("Processing results...\nIf no results appear within 10 seconds, this means that the scanned face does not match any face in our database.")
             averageDescriptor = takeAverage(descriptors);
             compareFaces();
@@ -173,7 +169,6 @@ function HomeScreen() {
 
   useEffect(() => {
     checkProfileExistence()
-    loadModels()
   });
 
   return (
