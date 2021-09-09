@@ -32,10 +32,11 @@ export default function LoginScreen() {
   }
 
   return (
-    <>
-      <Card >
+    <div>
+
+      <Card style={{backgroundColor: '#A51C30'}}>
         <Card.Body>
-          <h2 className="text-center mb-4">Log In</h2>
+          <h2 className="text-center mb-4" style={{color: 'white'}}>Nametag</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <div style={{display: 'flex', justifyContent: 'center'}}>
               <GoogleLogin
@@ -52,6 +53,6 @@ export default function LoginScreen() {
         </Card.Body>
       </Card>
 
-    </>
+    </div>
   )
 }

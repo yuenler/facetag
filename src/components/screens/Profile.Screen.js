@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
+import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 
 import Error from '@material-ui/icons/Error';
 
@@ -21,11 +22,31 @@ import { useAuth } from "../../contexts/AuthContext"
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
+    backgroundColor: "#A51C30",
+
   },
 }));
 
 
 function ProfileScreen() {
+  const FACING_MODE_USER = "user";
+  const FACING_MODE_ENVIRONMENT = "environment";
+
+  const videoConstraints = {
+    facingMode: FACING_MODE_USER
+  };
+
+  const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
+
+  const handleClick = React.useCallback(() => {
+      setFacingMode(
+        prevState =>
+          prevState === FACING_MODE_USER
+            ? FACING_MODE_ENVIRONMENT
+            : FACING_MODE_USER
+      );
+    }, []);
+
   const classes = useStyles();
   const history = useHistory()
   const { currentUser } = useAuth()
@@ -43,7 +64,22 @@ function ProfileScreen() {
   const [averageDescriptor, setAverageDescriptor] = useState(null)
   const [doneRunning, setDoneRunning] = useState(false)
   const [startedRunning, setStartedRunning] = useState(true)
+  const [name, setName] = useState(null)
+  const [phone, setPhone] = useState(null)
+  const [insta, setInsta] = useState(null)
+  const [snap, setSnap] = useState(null)
 
+  const retrieveData = () => {
+    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+      if (snapshot.exists()){
+         setAverageDescriptor(snapshot.val().descriptor)
+         setName(snapshot.val().name)
+         setPhone(snapshot.val().phone)
+         setInsta(snapshot.val().insta)
+         setSnap(snapshot.val().snap)
+      }
+   });
+  }
 
   function handleHome() {
     history.push("/")
@@ -97,7 +133,7 @@ function ProfileScreen() {
     await faceapi.loadSsdMobilenetv1Model('/models');
     await faceapi.loadFaceLandmarkModel('/models');
     await faceapi.loadFaceRecognitionModel('/models');
-    interval = setInterval(checkDetect, 100);
+    interval = setInterval(detect, 500);
   };
 
   const takeAverage = (descriptors) => {
@@ -117,9 +153,6 @@ function ProfileScreen() {
     return averages;
   }
 
-  const checkDetect = () => {
-      detect()
-  }
 
   const detect = async () => {
     if (
@@ -133,10 +166,10 @@ function ProfileScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= 10){
+        if (descriptors.length >= 5){
           clearInterval(interval);
           setButtonText("Run facial recognition")
-          if (descriptors.length == 10){
+          if (descriptors.length == 5){
             let descriptor = takeAverage(descriptors);
             setAverageDescriptor(descriptor)
             setDoneRunning(true)
@@ -150,6 +183,10 @@ function ProfileScreen() {
      
     }
   };
+
+  useEffect(() => {
+    retrieveData()
+  });
 
   return (
     <div className="App">
@@ -166,6 +203,7 @@ function ProfileScreen() {
 
       {openCamera?
         <div>
+        
         <Webcam
           ref={webcamRef}
           style={{
@@ -177,6 +215,10 @@ function ProfileScreen() {
             zindex: 9,
             width: 300,
             height: 300,
+          }}
+          videoConstraints={{
+            ...videoConstraints,
+            facingMode
           }}
         />
     {!doneRunning?
@@ -190,6 +232,9 @@ function ProfileScreen() {
       >
         {buttonText}
       </Button>
+      <IconButton onClick={handleClick}>
+        <FlipCameraIos/>
+        </IconButton>
 
       </div>
       
@@ -200,13 +245,13 @@ function ProfileScreen() {
             color="primary"
             size="small"
             className={classes.button}
-            onClick={() => setOpenCamera(false) }
+            onClick={() => handleLeaveCamera() }
           >
             Finish
             </Button>
       </div>
       }
-        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is off screen. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button below. </p>
+        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button above. </p>
         
       </div>
         :
@@ -234,22 +279,22 @@ function ProfileScreen() {
 
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
-              <Form.Control ref={nameRef} required />
+              <Form.Control ref={nameRef} defaultValue = {name} placeholder="John Harvard" required />
             </Form.Group>
 
             <Form.Group id="phone">
               <Form.Label>Phone number</Form.Label>
-              <Form.Control ref={phoneRef}  />
+              <Form.Control placeholder="555-555-5555" defaultValue = {phone} ref={phoneRef}  />
             </Form.Group>
 
             <Form.Group id="insta">
               <Form.Label>Instagram</Form.Label>
-              <Form.Control ref={instaRef}  />
+              <Form.Control placeholder="username" defaultValue = {insta} ref={instaRef}  />
             </Form.Group>
 
             <Form.Group id="snap">
               <Form.Label>Snapchat</Form.Label>
-              <Form.Control ref={snapRef}  />
+              <Form.Control placeholder="username" defaultValue = {snap} ref={snapRef}  />
             </Form.Group>
             
             <Button
