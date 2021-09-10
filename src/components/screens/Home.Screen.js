@@ -14,7 +14,9 @@ import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
-
+document.addEventListener("message", function(data) {
+  alert(data.data);
+});
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -65,11 +67,11 @@ function HomeScreen() {
   }
 
   const checkProfileExistence = () => {
-    // firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
-    //   if (!snapshot.exists()){
-    //      history.push("/profile")
-    //      alert('Please fill out your profile first!')
-    //   }
+  //   firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+  //     if (!snapshot.exists()){
+  //        history.push("/profile")
+  //        alert('Please fill out your profile first!')
+  //     }
   //  });
   }
 
@@ -154,7 +156,10 @@ function HomeScreen() {
     let closest = 1
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
-      let distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
+      let distance = 1;
+      if (user.descriptor != null){
+       distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
+      }
       if (distance < closest && distance < 0.5){
         closest = distance
         setPredictionOut(true)
