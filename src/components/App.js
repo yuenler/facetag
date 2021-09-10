@@ -18,8 +18,8 @@ function App() {
         <Router basename="/nametag">
           <AuthProvider>
             <Switch>
-              <PrivateRoute exact path="/" component={HomeScreen} />
-              <PrivateRoute path="/profile" component={ProfileScreen} />
+              <Route exact path="/" component={HomeScreen} />
+              <Route path="/profile" component={ProfileScreen} />
               <Route path="/login" component={LoginScreen} />
 
             </Switch>

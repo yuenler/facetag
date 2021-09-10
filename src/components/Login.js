@@ -34,8 +34,7 @@ export default function LoginScreen() {
           <h2 className="text-center mb-4" style={{color: 'white'}}>Nametag</h2>
           <div style={{display: 'flex', justifyContent: 'center'}}>
               <GoogleLogin
-                // clientId='686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com'
-                clientId = '686023333837-g0k5bikqg7i2q1gvhilv8tafloscngi4.apps.googleusercontent.com'
+                clientId='686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com'
                 buttonText="Log in with Google"
                 onSuccess={handleLogin}
                 onFailure={responseGoogle}
