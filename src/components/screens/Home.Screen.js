@@ -10,13 +10,10 @@ import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-
+// import userID from '../../index';
 
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
-document.addEventListener("message", function(data) {
-  alert(data.data);
-});
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -26,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function HomeScreen() {
+  function getUID(uid){
+    alert(uid)
+  }
 
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
