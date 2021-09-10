@@ -68,6 +68,8 @@ function ProfileScreen() {
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
+  const [modelsLoaded, setModelsLoaded] = useState(false)
+
   const NUM_READINGS = 5;
 
   function retrieveData() {
@@ -83,6 +85,12 @@ function ProfileScreen() {
 
   }
 
+  async function loadModels () {
+    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
+    await faceapi.loadFaceLandmarkModel('/nametag/models');
+    await faceapi.loadFaceRecognitionModel('/nametag/models');
+    setModelsLoaded(true);
+  }
 
   function handleHome() {
     history.push("/")
@@ -118,6 +126,7 @@ function ProfileScreen() {
     setDoneRunning(false)
     setStartedRunning(false)
     setOpenCamera(true)
+    loadModels()
   }
 
   const handleLeaveCamera = () => {
@@ -133,10 +142,8 @@ function ProfileScreen() {
   }
 
 
+
   const runFaceapi = async () => {
-    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
-    await faceapi.loadFaceLandmarkModel('/nametag/models');
-    await faceapi.loadFaceRecognitionModel('/nametag/models');
     while (descriptors.length <= NUM_READINGS){
       await detect()
     }
@@ -206,8 +213,13 @@ function ProfileScreen() {
         <Clear />
       </IconButton>: null
       }
+      
+      {(openCamera && !modelsLoaded)?
+      <p>Loading facial recognition models...</p>
+      :
+          null}
 
-      {openCamera?
+      {(openCamera && modelsLoaded)?
         <div>
         
         <Webcam
@@ -226,6 +238,7 @@ function ProfileScreen() {
             ...videoConstraints,
             facingMode
           }}
+          mirrored={facingMode === FACING_MODE_USER}
         />
     {!doneRunning?
       <div>
@@ -263,6 +276,7 @@ function ProfileScreen() {
         <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button above. </p>
         
       </div>
+
         :
         <div>
           <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>

@@ -54,6 +54,8 @@ function HomeScreen() {
   const [snap, setSnap] = useState("");
   const [insta, setInsta] = useState("");
   const [startedRunning, setStartedRunning] = useState(false)
+  const [modelsLoaded, setModelsLoaded] = useState(false)
+
   const phoneSMS = "sms:" + phone;
   const webcamRef = useRef(null);
   const NUM_READINGS = 1;
@@ -87,16 +89,20 @@ function HomeScreen() {
     runFaceapi()
   }
 
+  async function loadModels () {
+    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
+    await faceapi.loadFaceLandmarkModel('/nametag/models');
+    await faceapi.loadFaceRecognitionModel('/nametag/models');
+    setModelsLoaded(true);
+  }
+
   async function logout() {
     await changeUser(null)
     history.push("/login")
   }
 
   const runFaceapi = async () => {
-    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
-    await faceapi.loadFaceLandmarkModel('/nametag/models');
-    await faceapi.loadFaceRecognitionModel('/nametag/models');
-    while (descriptors.length <= NUM_READINGS){
+    while (descriptors.length < NUM_READINGS){
       await detect()
     }
   };
@@ -170,6 +176,7 @@ function HomeScreen() {
 
   useEffect(() => {
     checkProfileExistence()
+    loadModels()
   });
 
   return (
@@ -195,6 +202,8 @@ function HomeScreen() {
       </Button>
 
       <div>
+          {modelsLoaded?
+          <div>
           <Webcam
             ref={webcamRef}
             style={{
@@ -212,6 +221,7 @@ function HomeScreen() {
               ...videoConstraints,
               facingMode
             }}
+            mirrored={facingMode === FACING_MODE_USER}
           />
           <Button
             variant="contained"
@@ -226,6 +236,11 @@ function HomeScreen() {
       <IconButton onClick={handleClick}>
         <FlipCameraIos/>
         </IconButton>: null
+      }
+        </div>
+
+      : 
+      <p>Loading facial recognition models...</p>
       }
 
       </div>
