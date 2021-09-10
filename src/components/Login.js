@@ -40,7 +40,8 @@ export default function LoginScreen() {
                 onFailure={responseGoogle}
                 cookiePolicy={'single_host_origin'}
                 isSignedIn={true}
-
+                uxMode="redirect"
+                redirectUri={window.location.href}
             />
             </div>
 
