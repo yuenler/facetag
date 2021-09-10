@@ -67,12 +67,12 @@ function HomeScreen() {
   }
 
   const checkProfileExistence = () => {
-  //   firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
-  //     if (!snapshot.exists()){
-  //        history.push("/profile")
-  //        alert('Please fill out your profile first!')
-  //     }
-  //  });
+    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+      if (!snapshot.exists()){
+         history.push("/profile")
+         alert('Please fill out your profile first!')
+      }
+   });
   }
 
 

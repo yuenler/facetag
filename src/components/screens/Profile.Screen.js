@@ -71,15 +71,15 @@ function ProfileScreen() {
   const NUM_READINGS = 5;
 
   function retrieveData() {
-  //   firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
-  //     if (snapshot.exists()){
-  //        setAverageDescriptor(snapshot.val().descriptor)
-  //        setName(snapshot.val().name)
-  //        setPhone(snapshot.val().phone)
-  //        setInsta(snapshot.val().insta)
-  //        setSnap(snapshot.val().snap)
-  //     }
-  //  });
+    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+      if (snapshot.exists()){
+         setAverageDescriptor(snapshot.val().descriptor)
+         setName(snapshot.val().name)
+         setPhone(snapshot.val().phone)
+         setInsta(snapshot.val().insta)
+         setSnap(snapshot.val().snap)
+      }
+   });
 
   }
 
