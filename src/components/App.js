@@ -27,7 +27,8 @@ function App() {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <AddToHomeScreen />
+      <AddToHomeScreen/>
+
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router basename="/nametag">
           <AuthProvider>
