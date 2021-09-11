@@ -22,8 +22,6 @@ import { useAuth } from "../../contexts/AuthContext"
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
-    backgroundColor: "#A51C30",
-
   },
 }));
 

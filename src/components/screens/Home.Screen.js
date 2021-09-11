@@ -7,7 +7,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 
@@ -17,7 +17,6 @@ import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
-    backgroundColor: "#A51C30",
   },
 }));
 
@@ -41,10 +40,9 @@ function HomeScreen() {
       );
     }, []);
 
-
   const history = useHistory()
   const { changeUser, currentUser } = useAuth()
-  const classes = useStyles();
+  const classes = useStyles()
   const [prediction, setPrediction] = useState("Hold the phone so that the person's face takes up the majority of the screen, but no part of their head is off screen. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button above.");
   const [predictionOut, setPredictionOut] = useState(false);
 
