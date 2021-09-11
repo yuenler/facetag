@@ -13,7 +13,7 @@ import { useReactPWAInstall } from "react-pwa-install";
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
 
-  const handleClick = () => {
+  const handlePopup = () => {
     pwaInstall({
       title: "Install Web App",
       logo: './myLogo.png',
@@ -36,8 +36,15 @@ function App() {
     await faceapi.loadFaceLandmarkModel('/nametag/models');
     await faceapi.loadFaceRecognitionModel('/nametag/models');
   }
+  
+  function pwaOption(){
+    if (supported() && !isInstalled()) { 
+      handlePopup()
+    }
+}
 
   useEffect(() => {
+    pwaOption()
     loadModels()
   });
   return (
@@ -57,13 +64,7 @@ function App() {
           </AuthProvider>
         </Router>
       </div>
-      <div>
-      {supported() && !isInstalled() && (
-        <button type="button" onClick={handleClick}>
-          Install App
-        </button>
-      )}
-    </div>
+      
     </Container>
   )
 }
