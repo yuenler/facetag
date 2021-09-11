@@ -118,15 +118,14 @@ function HomeScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptor = detectionWithDescriptors.descriptor;
-        setButtonText("Run facial recognition")
         setPrediction("The scanned face does not match any face in our database.")
         compareFaces();
-        setStartedRunning(false)
-      
       }
       else{
         setPrediction('No face detected, please try again.')
       }
+      setButtonText("Run facial recognition")
+      setStartedRunning(false)
      
     }
   };

@@ -149,14 +149,14 @@ function ProfileScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         setDescriptor(detectionWithDescriptors.descriptor);
-        setButtonText("Run facial recognition")
-        setDoneRunning(true)
-        setStartedRunning(false)
         setPrediction('')
+        setDoneRunning(true)
       }
       else{
         setPrediction('No face detected, please try again.')
       }
+      setButtonText("Run facial recognition")
+      setStartedRunning(false)
      
     }
   };
