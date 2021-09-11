@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     pwaOption()
     loadModels()
-  },[]);
+  });
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
@@ -56,7 +56,7 @@ function App() {
             </Switch>
           </AuthProvider>
         </Router>
-      </div>: <div></div>
+      </div>: null
     }
       
     </Container>
