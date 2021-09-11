@@ -4,12 +4,14 @@ import Webcam from "react-webcam";
 import * as faceapi from 'face-api.js';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import MonetizationOn from '@material-ui/icons/MonetizationOn';
 import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
+import AddToHomescreen from 'react-add-to-homescreen';
 
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
@@ -43,7 +45,7 @@ function HomeScreen() {
   const history = useHistory()
   const { changeUser, currentUser } = useAuth()
   const classes = useStyles()
-  const [prediction, setPrediction] = useState("Hold the phone so that the person's face takes up the majority of the screen, but no part of their head is off screen. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button above.");
+  const [prediction, setPrediction] = useState("Hold the phone so that the person's face takes up the majority of the screen, but no part of their head is cut off. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button above.");
   const [predictionOut, setPredictionOut] = useState(false);
 
   const [buttonText, setButtonText] = useState("Run facial recognition")
@@ -57,11 +59,18 @@ function HomeScreen() {
   const instaRef = "instagram://user?username=" + insta;
   const snapRef = "snapchat://add/" + snap;
   const webcamRef = useRef(null);
-  const NUM_READINGS = 1;
+
+
 
   function handleProfile() {
     history.push("/profile")
   }
+
+  const handleAddToHomescreenClick = () => {
+    alert(`
+      1. Open Share menu
+      2. Tap on "Add to Home Screen" button`);
+  };
 
   const checkProfileExistence = () => {
     firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
@@ -73,9 +82,7 @@ function HomeScreen() {
   }
 
 
-  let descriptors = [];
-  let averageDescriptor;
-  let interval;
+  let descriptor;
 
   const handleRunFaceapi = () => {
     setButtonText("Running facial recognition...");
@@ -95,27 +102,10 @@ function HomeScreen() {
   }
 
   const runFaceapi = async () => {
-    while (descriptors.length < NUM_READINGS){
+      descriptor = null;
       await detect()
-    }
   };
 
-  const takeAverage = (descriptors) => {
-    let averages = []
-   
-    for(let i = 0; i < 128; i++) {
-      let sum = 0;
-      let average;
-      for(let j = 0; j < descriptors.length; j++) {
-        sum += descriptors[j][i];
-      }
-      average = sum/descriptors.length;
-      
-      averages.push(average);
-    }
-
-    return averages;
-  }
 
   const detect = async () => {
     if (
@@ -125,23 +115,18 @@ function HomeScreen() {
     ) {
       // Get Video Properties
       const video = webcamRef.current.video;
-
+      setPrediction('Analyzing face...')
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
-        descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= NUM_READINGS){
-          clearInterval(interval);
-          // setOpenCamera(false)
-          setButtonText("Run facial recognition")
-          if (descriptors.length === NUM_READINGS){
-            setPrediction("Processing results...\nIf no results appear within 10 seconds, this means that the scanned face does not match any face in our database.")
-            averageDescriptor = takeAverage(descriptors);
-            compareFaces();
-            setStartedRunning(false)
-          }
-
-        }
+        descriptor = detectionWithDescriptors.descriptor;
+        setButtonText("Run facial recognition")
+        setPrediction("The scanned face does not match any face in our database.")
+        compareFaces();
+        setStartedRunning(false)
       
+      }
+      else{
+        setPrediction('No face detected, please try again.')
       }
      
     }
@@ -153,7 +138,7 @@ function HomeScreen() {
       let user = snapshot.val()
       let distance = 1;
       if (user.descriptor != null){
-       distance = faceapi.euclideanDistance(user.descriptor, averageDescriptor)
+       distance = faceapi.euclideanDistance(user.descriptor, descriptor)
       }
       if (distance < closest && distance < 0.5){
         closest = distance
@@ -175,6 +160,8 @@ function HomeScreen() {
     <div className="App" style={{textAlign: 'center', /*backgroundColor: "black", color: "white" */}}>
       <header className="App-header">
 
+      <AddToHomescreen onAddToHomescreenClick={handleAddToHomescreenClick} />
+
       <GoogleLogout
         clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"
         buttonText="Logout"
@@ -191,6 +178,17 @@ function HomeScreen() {
         onClick={() => handleProfile() }
       >
         Edit Profile
+      </Button>
+
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        startIcon={<MonetizationOn />}
+        onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
+      >
+        Donate
       </Button>
 
       <div>

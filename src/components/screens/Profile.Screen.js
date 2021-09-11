@@ -53,26 +53,22 @@ function ProfileScreen() {
   const phoneRef = useRef()
   const instaRef = useRef()
   const snapRef = useRef()
-
-  let descriptors = [];
-  let interval;
   
   const [openCamera, setOpenCamera] = useState(false);
+  const [prediction, setPrediction] = useState("Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button above.")
   const [buttonText, setButtonText] = useState("Run facial recognition")
-  const [averageDescriptor, setAverageDescriptor] = useState(null)
   const [doneRunning, setDoneRunning] = useState(false)
   const [startedRunning, setStartedRunning] = useState(true)
+  const [descriptor, setDescriptor] = useState(null);
   const [name, setName] = useState(null)
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
 
-  const NUM_READINGS = 1;
-
   function retrieveData() {
     firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
       if (snapshot.exists()){
-         setAverageDescriptor(snapshot.val().descriptor)
+         setDescriptor(snapshot.val().descriptor)
          setName(snapshot.val().name)
          setPhone(snapshot.val().phone)
          setInsta(snapshot.val().insta)
@@ -91,12 +87,12 @@ function ProfileScreen() {
   }
 
   const saveData = () => {
-    if (nameRef.current.value === '' || averageDescriptor == null){
+    if (nameRef.current.value === '' || descriptor == null){
       alert("Please scan your face and fill in your name.")
     }
     else{
     firebase.database().ref('Users/' + currentUser.googleId).set({
-			descriptor: averageDescriptor,
+			descriptor: descriptor,
       name: nameRef.current.value,
       phone: phoneRef.current.value,
       insta: instaRef.current.value,
@@ -137,28 +133,9 @@ function ProfileScreen() {
 
 
   const runFaceapi = async () => {
-    while (descriptors.length < NUM_READINGS){
+      setDescriptor(null);
       await detect()
-    }
   };
-
-  const takeAverage = (descriptors) => {
-    let averages = []
-   
-    for(let i = 0; i < 128; i++) {
-      let sum = 0;
-      let average;
-      for(let j = 0; j < descriptors.length; j++) {
-        sum += descriptors[j][i];
-      }
-      average = sum/descriptors.length;
-      
-      averages.push(average);
-    }
-
-    return averages;
-  }
-
 
   const detect = async () => {
     if (
@@ -168,23 +145,17 @@ function ProfileScreen() {
     ) {
       // Get Video Properties
       const video = webcamRef.current.video;
-
+      setPrediction('Analyzing face...')
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
-        descriptors.push(detectionWithDescriptors.descriptor);
-        if (descriptors.length >= NUM_READINGS){
-          clearInterval(interval);
-          setButtonText("Run facial recognition")
-          if (descriptors.length === NUM_READINGS){
-            let descriptor = takeAverage(descriptors);
-            setAverageDescriptor(descriptor)
-            setDoneRunning(true)
-            setStartedRunning(false)
-
-          }
-
-        }
-      
+        setDescriptor(detectionWithDescriptors.descriptor);
+        setButtonText("Run facial recognition")
+        setDoneRunning(true)
+        setStartedRunning(false)
+        setPrediction('')
+      }
+      else{
+        setPrediction('No face detected, please try again.')
       }
      
     }
@@ -262,7 +233,7 @@ function ProfileScreen() {
             </Button>
       </div>
       }
-        <p>Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button above. </p>
+        <p>{prediction}</p>
         
       </div>
 
@@ -283,7 +254,7 @@ function ProfileScreen() {
             </Button>
 
             {
-              averageDescriptor ?
+              descriptor ?
               <Check/>:
               <Error/>
             }
