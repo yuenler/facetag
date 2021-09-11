@@ -4,13 +4,19 @@ import App from "./components/App"
 import "bootstrap/dist/css/bootstrap.min.css"
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import ReactPWAInstallProvider from "react-pwa-install";
+
+
 
 
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>,
+  <ReactPWAInstallProvider enableLogging>
     <App />
-  </React.StrictMode>,
+  </ReactPWAInstallProvider>,
   document.getElementById("root")
 )
 

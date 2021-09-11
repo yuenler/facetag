@@ -7,10 +7,29 @@ import ProfileScreen from "./screens/Profile.Screen"
 import PrivateRoute from "./PrivateRoute"
 import HomeScreen from "./screens/Home.Screen"
 import * as faceapi from 'face-api.js';
-
+import { useReactPWAInstall } from "react-pwa-install";
 
 
 function App() {
+  const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
+
+  const handleClick = () => {
+    pwaInstall({
+      title: "Install Web App",
+      logo: './myLogo.png',
+      features: (
+        <ul>
+          <li>Cool feature 1</li>
+          <li>Cool feature 2</li>
+          <li>Even cooler feature</li>
+          <li>Works offline</li>
+        </ul>
+      ),
+      description: "This is a very good app that does a lot of useful stuff. ",
+    })
+      .then(() => alert("App installed successfully or instructions for install shown"))
+      .catch(() => alert("User opted out from installing"));
+  };
 
   async function loadModels () {
     await faceapi.loadSsdMobilenetv1Model('/nametag/models');
@@ -38,6 +57,13 @@ function App() {
           </AuthProvider>
         </Router>
       </div>
+      <div>
+      {supported() && !isInstalled() && (
+        <button type="button" onClick={handleClick}>
+          Install App
+        </button>
+      )}
+    </div>
     </Container>
   )
 }
