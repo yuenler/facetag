@@ -56,7 +56,7 @@ function App() {
             </Switch>
           </AuthProvider>
         </Router>
-      </div>: <p>Loading face recognition models...</p>
+      </div>: <p>Loading facial recognition models...</p>
     }
       
     </Container>
