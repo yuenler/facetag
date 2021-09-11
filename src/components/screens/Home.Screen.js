@@ -57,6 +57,8 @@ function HomeScreen() {
   const [modelsLoaded, setModelsLoaded] = useState(false)
 
   const phoneSMS = "sms:" + phone;
+  const instaRef = "instagram://user?username=" + insta;
+  const snapRef = "snapchat://add/" + snap;
   const webcamRef = useRef(null);
   const NUM_READINGS = 1;
 
@@ -249,9 +251,9 @@ function HomeScreen() {
       {predictionOut?
         <div style={{border: "2px solid black", backgroundColor: "lightgray", paddingTop: "10px"}}>
           <p>{"Name: " + name}</p>
-          <p>Phone number: <a href={phoneSMS}>{phone}</a></p>
-          <p>{"Snapchat: " + snap}</p>
-          <p>{"Instagram: " + insta}</p>
+          <p>Phone number: <a href={phoneRef}>{phone}</a></p>
+          <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
+          <p>Instagram: <a href={instaRef}>{insta}</a></p>
         </div>
         : null
       }
