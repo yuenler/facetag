@@ -56,7 +56,7 @@ function HomeScreen() {
   const [startedRunning, setStartedRunning] = useState(false)
   const [modelsLoaded, setModelsLoaded] = useState(false)
 
-  const phoneSMS = "sms:" + phone;
+  const phoneRef = "sms:" + phone;
   const instaRef = "instagram://user?username=" + insta;
   const snapRef = "snapchat://add/" + snap;
   const webcamRef = useRef(null);
