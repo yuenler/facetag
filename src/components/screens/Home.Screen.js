@@ -4,7 +4,7 @@ import Webcam from "react-webcam";
 import * as faceapi from 'face-api.js';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MonetizationOn from '@material-ui/icons/MonetizationOn';
+import Favorite from '@material-ui/icons/Favorite';
 import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
@@ -174,17 +174,18 @@ function HomeScreen() {
         startIcon={<AccountCircle />}
         onClick={() => handleProfile() }
       >
-        Edit Profile
+        Profile
       </Button>
 
-      <IconButton
+      <Button
         variant="contained"
-        color="primary"
+        color="secondary"
         size="small"
+        startIcon={<Favorite />}
         onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
       >
-        <MonetizationOn />
-      </IconButton>
+        Donate
+      </Button>
 
       <div>
          
