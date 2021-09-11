@@ -27,7 +27,12 @@ function App() {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <AddToHomeScreen/>
+      <AddToHomeScreen
+      appId='Nametag'
+      startDelay={ 0 }
+      lifespan={ 30 }
+      displayPace={ 0 }
+      />
 
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router basename="/nametag">
