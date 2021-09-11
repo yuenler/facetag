@@ -66,9 +66,8 @@ function ProfileScreen() {
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
-  const [modelsLoaded, setModelsLoaded] = useState(false)
 
-  const NUM_READINGS = 5;
+  const NUM_READINGS = 1;
 
   function retrieveData() {
     firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
@@ -81,13 +80,6 @@ function ProfileScreen() {
       }
    });
 
-  }
-
-  async function loadModels () {
-    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
-    await faceapi.loadFaceLandmarkModel('/nametag/models');
-    await faceapi.loadFaceRecognitionModel('/nametag/models');
-    setModelsLoaded(true);
   }
 
   function handleHome() {
@@ -121,10 +113,13 @@ function ProfileScreen() {
 
 
   const handleCamera = () => {
+    setName(nameRef.current.value);
+    setPhone(phoneRef.current.value);
+    setInsta(instaRef.current.value);
+    setSnap(snapRef.current.value);
     setDoneRunning(false)
     setStartedRunning(false)
     setOpenCamera(true)
-    loadModels()
   }
 
   const handleLeaveCamera = () => {
@@ -142,7 +137,7 @@ function ProfileScreen() {
 
 
   const runFaceapi = async () => {
-    while (descriptors.length <= NUM_READINGS){
+    while (descriptors.length < NUM_READINGS){
       await detect()
     }
   };
@@ -197,7 +192,7 @@ function ProfileScreen() {
 
   useEffect(() => {
     retrieveData()
-  });
+  }, []);
 
   return (
     <div className="App">
@@ -212,12 +207,8 @@ function ProfileScreen() {
       </IconButton>: null
       }
       
-      {(openCamera && !modelsLoaded)?
-      <p>Loading facial recognition models...</p>
-      :
-          null}
 
-      {(openCamera && modelsLoaded)?
+      {openCamera?
         <div>
         
         <Webcam

@@ -7,7 +7,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
 import { useAuth } from "../../contexts/AuthContext"
-import { makeStyles, createTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 
@@ -52,7 +52,6 @@ function HomeScreen() {
   const [snap, setSnap] = useState("");
   const [insta, setInsta] = useState("");
   const [startedRunning, setStartedRunning] = useState(false)
-  const [modelsLoaded, setModelsLoaded] = useState(false)
 
   const phoneRef = "sms:" + phone;
   const instaRef = "instagram://user?username=" + insta;
@@ -89,12 +88,6 @@ function HomeScreen() {
     runFaceapi()
   }
 
-  async function loadModels () {
-    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
-    await faceapi.loadFaceLandmarkModel('/nametag/models');
-    await faceapi.loadFaceRecognitionModel('/nametag/models');
-    setModelsLoaded(true);
-  }
 
   async function logout() {
     await changeUser(null)
@@ -176,8 +169,7 @@ function HomeScreen() {
 
   useEffect(() => {
     checkProfileExistence()
-    loadModels()
-  });
+  },[]);
 
   return (
     <div className="App" style={{textAlign: 'center', /*backgroundColor: "black", color: "white" */}}>
@@ -202,8 +194,7 @@ function HomeScreen() {
       </Button>
 
       <div>
-          {modelsLoaded?
-          <div>
+         
           <Webcam
             ref={webcamRef}
             style={{
@@ -237,11 +228,7 @@ function HomeScreen() {
         <FlipCameraIos/>
         </IconButton>: null
       }
-        </div>
 
-      : 
-      <p>Loading facial recognition models...</p>
-      }
 
       </div>
       <hr/>

@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import { Container } from "react-bootstrap"
 import { AuthProvider } from "../contexts/AuthContext"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
@@ -6,9 +6,20 @@ import LoginScreen from "./Login"
 import ProfileScreen from "./screens/Profile.Screen"
 import PrivateRoute from "./PrivateRoute"
 import HomeScreen from "./screens/Home.Screen"
+import * as faceapi from 'face-api.js';
 
 
 function App() {
+
+  async function loadModels () {
+    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
+    await faceapi.loadFaceLandmarkModel('/nametag/models');
+    await faceapi.loadFaceRecognitionModel('/nametag/models');
+  }
+
+  useEffect(() => {
+    loadModels()
+  });
   return (
     <Container
       className="d-flex align-items-center justify-content-center"

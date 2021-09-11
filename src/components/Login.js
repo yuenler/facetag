@@ -23,8 +23,7 @@ export default function LoginScreen() {
       }
       else{
         history.push("/")
-      }
-      
+      }      
   }
 
   return (
