@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import { Container } from "react-bootstrap"
 import { AuthProvider } from "../contexts/AuthContext"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
@@ -12,7 +12,7 @@ import { useReactPWAInstall } from "react-pwa-install";
 
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
-
+  const [isLoaded, setIsLoaded] = useState(false)
   const handlePopup = () => {
     pwaInstall({
       title: "Install Nametag to device",
@@ -26,6 +26,7 @@ function App() {
     await faceapi.loadSsdMobilenetv1Model('/nametag/models');
     await faceapi.loadFaceLandmarkModel('/nametag/models');
     await faceapi.loadFaceRecognitionModel('/nametag/models');
+    setIsLoaded(true)
   }
   
   function pwaOption(){
@@ -37,12 +38,14 @@ function App() {
   useEffect(() => {
     pwaOption()
     loadModels()
-  });
+  },[]);
   return (
+    // {isLoaded?
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
+      {isLoaded?
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router basename="/nametag">
           <AuthProvider>
@@ -54,7 +57,8 @@ function App() {
             </Switch>
           </AuthProvider>
         </Router>
-      </div>
+      </div>: null
+    }
       
     </Container>
   )
