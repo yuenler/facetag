@@ -40,7 +40,6 @@ function App() {
     loadModels()
   },[]);
   return (
-    // {isLoaded?
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
@@ -57,7 +56,7 @@ function App() {
             </Switch>
           </AuthProvider>
         </Router>
-      </div>: null
+      </div>: <div></div>
     }
       
     </Container>
