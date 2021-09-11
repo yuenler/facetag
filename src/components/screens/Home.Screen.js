@@ -11,7 +11,6 @@ import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-import AddToHomescreen from 'react-add-to-homescreen';
 
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
@@ -159,8 +158,6 @@ function HomeScreen() {
   return (
     <div className="App" style={{textAlign: 'center', /*backgroundColor: "black", color: "white" */}}>
       <header className="App-header">
-
-      <AddToHomescreen onAddToHomescreenClick={handleAddToHomescreenClick} />
 
       <GoogleLogout
         clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"

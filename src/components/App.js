@@ -7,6 +7,8 @@ import ProfileScreen from "./screens/Profile.Screen"
 import PrivateRoute from "./PrivateRoute"
 import HomeScreen from "./screens/Home.Screen"
 import * as faceapi from 'face-api.js';
+import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
+
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
+      <AddToHomeScreen />
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router basename="/nametag">
           <AuthProvider>
