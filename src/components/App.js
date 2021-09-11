@@ -15,20 +15,11 @@ function App() {
 
   const handlePopup = () => {
     pwaInstall({
-      title: "Install Web App",
+      title: "Install Nametag to device",
       logo: './myLogo.png',
-      features: (
-        <ul>
-          <li>Cool feature 1</li>
-          <li>Cool feature 2</li>
-          <li>Even cooler feature</li>
-          <li>Works offline</li>
-        </ul>
-      ),
-      description: "This is a very good app that does a lot of useful stuff. ",
     })
-      .then(() => alert("App installed successfully or instructions for install shown"))
-      .catch(() => alert("User opted out from installing"));
+      .then(() => console.log("App installed successfully or instructions for install shown"))
+      .catch(() => console.log("User opted out from installing"));
   };
 
   async function loadModels () {
