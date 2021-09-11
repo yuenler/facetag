@@ -12,7 +12,7 @@ import { useReactPWAInstall } from "react-pwa-install";
 
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
-  const [isLoaded, setIsLoaded] = useState(true)
+  const [isLoaded, setIsLoaded] = useState(false)
   const handlePopup = () => {
     pwaInstall({
       title: "Install Nametag to device",
@@ -26,7 +26,7 @@ function App() {
     await faceapi.loadSsdMobilenetv1Model('/nametag/models');
     await faceapi.loadFaceLandmarkModel('/nametag/models');
     await faceapi.loadFaceRecognitionModel('/nametag/models');
-    // setIsLoaded(true)
+    setIsLoaded(true)
   }
   
   function pwaOption(){
