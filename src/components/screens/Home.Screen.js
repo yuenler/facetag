@@ -177,16 +177,14 @@ function HomeScreen() {
         Edit Profile
       </Button>
 
-      <Button
+      <IconButton
         variant="contained"
         color="primary"
         size="small"
-        className={classes.button}
-        startIcon={<MonetizationOn />}
         onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
       >
-        Donate
-      </Button>
+        <MonetizationOn />
+      </IconButton>
 
       <div>
          
