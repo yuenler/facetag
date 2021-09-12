@@ -66,7 +66,7 @@ function ProfileScreen() {
   const [snap, setSnap] = useState(null)
 
   function retrieveData() {
-    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+    firebase.database().ref('Users/' + currentUser).once("value", snapshot => {
       if (snapshot.exists()){
          setDescriptor(snapshot.val().descriptor)
          setName(snapshot.val().name)
@@ -91,7 +91,7 @@ function ProfileScreen() {
       alert("Please scan your face and fill in your name.")
     }
     else{
-    firebase.database().ref('Users/' + currentUser.googleId).set({
+    firebase.database().ref('Users/' + currentUser).set({
 			descriptor: descriptor,
       name: nameRef.current.value,
       phone: phoneRef.current.value,

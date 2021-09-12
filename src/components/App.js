@@ -10,6 +10,7 @@ import * as faceapi from 'face-api.js';
 import { useReactPWAInstall } from "react-pwa-install";
 import icon192 from './icon192.png'
 
+
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
   const [isLoaded, setIsLoaded] = useState(false)

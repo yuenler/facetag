@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {  Card } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
@@ -13,7 +13,6 @@ export default function LoginScreen() {
   const history = useHistory()
 
   async function handleLogin(res) {
-      await changeUser(res.profileObj)
       let email = res.profileObj.email
       var idxHarvard = email.indexOf('@college.harvard.edu');
       if (idxHarvard === -1) {
@@ -22,9 +21,19 @@ export default function LoginScreen() {
         email = null
       }
       else{
+        await changeUser(res.profileObj.googleId)
+        localStorage.setItem('user', res.profileObj.googleId)
         history.push("/")
       }      
   }
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      changeUser(loggedInUser);
+      history.push("/")
+    }
+  }, []);
 
   return (
     <div>
@@ -41,7 +50,6 @@ export default function LoginScreen() {
                 onSuccess={handleLogin}
                 onFailure={responseGoogle}
                 cookiePolicy={'single_host_origin'}
-                isSignedIn={true}
                 uxMode="popup"
             />
             </div>

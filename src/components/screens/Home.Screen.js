@@ -65,14 +65,8 @@ function HomeScreen() {
     history.push("/profile")
   }
 
-  const handleAddToHomescreenClick = () => {
-    alert(`
-      1. Open Share menu
-      2. Tap on "Add to Home Screen" button`);
-  };
-
   const checkProfileExistence = () => {
-    firebase.database().ref('Users/' + currentUser.googleId).once("value", snapshot => {
+    firebase.database().ref('Users/' + currentUser).once("value", snapshot => {
       if (!snapshot.exists()){
          history.push("/profile")
          alert('Please fill out your profile first!')
@@ -97,6 +91,7 @@ function HomeScreen() {
 
   async function logout() {
     await changeUser(null)
+    localStorage.removeItem('user')
     history.push("/login")
   }
 
@@ -122,7 +117,7 @@ function HomeScreen() {
         compareFaces();
       }
       else{
-        setPrediction('No face detected, please try again.')
+        setPrediction('No face detected, please try again. If nothing works, try reloading the page.')
       }
       setButtonText("Run facial recognition")
       setStartedRunning(false)
