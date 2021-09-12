@@ -264,12 +264,11 @@ function HomeScreen() {
 
 
       </div>
-      <hr/>
       <p>{prediction}</p>
       {predictionOut?
         <div>
         <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px"}}>
-          <p>{String(Math.round((1 - distances[predictionIndex])*100) + "% Match")}</p>
+          <p>{String(Math.round((1 - distances[predictionIndex])*100) + "% match")}</p>
           <p>{"Name: " + names[predictionIndex]}</p>
           <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
           <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>
