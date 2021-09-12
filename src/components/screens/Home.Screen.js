@@ -23,6 +23,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+var distances = [];
+var names = [];
+var phones = [];
+var snaps = [];
+var instas = [];
+var predictionIndex = 0;
+
 function HomeScreen() {
 
   const FACING_MODE_USER = "user";
@@ -51,14 +58,15 @@ function HomeScreen() {
 
   const [buttonText, setButtonText] = useState("Run facial recognition")
   const [startedRunning, setStartedRunning] = useState(false)
-  const [predictionIndex, setPredictionIndex] = useState(0);
-  const [names, setNames] = useState([]);
-  const [phones, setPhones] = useState([]);
-  const [snaps, setSnaps] = useState([]);
-  const [instas, setInstas] = useState([]);
-  const [distances, setDistances] = useState([]);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [snap, setSnap] = useState('');
+  const [insta, setInsta] = useState('');
+  const [distance, setDistance] = useState('');
+  const [predictionIndexPrint, setPredictionIndexPrint] = useState(0);
 
   let descriptor;
+  
 
   const phoneRef = "sms:" + phones[predictionIndex];
   const instaRef = "instagram://user?username=" + instas[predictionIndex];
@@ -81,11 +89,16 @@ function HomeScreen() {
   const handleRunFaceapi = () => {
     setButtonText("Running facial recognition...");
     setStartedRunning(true)
-    setNames([]);
-    setPhones([]);
-    setSnaps([]);
-    setInstas([]);
-    setDistances([]);
+    setName('');
+    setPhone('');
+    setSnap('');
+    setInsta('');
+    setDistance('');
+    distances = [];
+    names = [];
+    phones = [];
+    snaps = [];
+    instas = [];
     setPredictionOut(false);
     runFaceapi()
     
@@ -93,20 +106,34 @@ function HomeScreen() {
 
   const handleLeft = () => {
     if (predictionIndex === 0){
-      setPredictionIndex(distances.length - 1);
+      predictionIndex = distances.length - 1;
     }
     else{
-      setPredictionIndex(predictionIndex - 1);
+      predictionIndex = predictionIndex - 1;
     }
+    setDistance(distances[predictionIndex])
+    setName(names[predictionIndex])
+    setPhone(phones[predictionIndex])
+    setSnap(snaps[predictionIndex])
+    setInsta(instas[predictionIndex])
+    setPredictionIndexPrint(predictionIndex)
   }
 
   const handleRight = () => {
+
     if (predictionIndex === distances.length - 1){
-      setPredictionIndex(0);
+      predictionIndex = 0;
     }
     else{
-      setPredictionIndex(predictionIndex + 1);
+      predictionIndex = predictionIndex + 1;
     }
+    setDistance(distances[predictionIndex])
+    setName(names[predictionIndex])
+    setPhone(phones[predictionIndex])
+    setSnap(snaps[predictionIndex])
+    setInsta(instas[predictionIndex])
+    setPredictionIndexPrint(predictionIndex)
+
   }
 
 
@@ -159,11 +186,6 @@ function HomeScreen() {
   }
 
   const compareFaces = () => {
-    var names = [];
-    var phones = [];
-    var snaps = [];
-    var instas = [];
-    var distances = [];
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let distance = 1;
@@ -178,16 +200,17 @@ function HomeScreen() {
         phones.splice(index, 0, user.phone); 
         snaps.splice(index, 0, user.snap); 
         instas.splice(index, 0, user.insta);
-        
-        setDistances(distances)
-        setNames(names)
-        setPhones(phones)
-        setSnaps(snaps)
-        setInstas(instas)
+        predictionIndex = 0
+        setDistance(distances[predictionIndex])
+        setName(names[predictionIndex])
+        setPhone(phones[predictionIndex])
+        setSnap(snaps[predictionIndex])
+        setInsta(instas[predictionIndex])
+        setPredictionIndexPrint(predictionIndex)
+
         setPrediction('')
-        setPredictionIndex(0)
       }
-    })	
+    })
   }
 
   useEffect(() => {
@@ -268,11 +291,11 @@ function HomeScreen() {
       {predictionOut?
         <div>
         <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px"}}>
-          <p>{String(Math.round((1 - distances[predictionIndex])*100) + "% match")}</p>
-          <p>{"Name: " + names[predictionIndex]}</p>
-          <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
-          <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>
-          <p>Instagram: <a href={instaRef}>{instas[predictionIndex]}</a></p>
+          <p>{String(Math.round((1 - distance)*100) + "% match")}</p>
+          <p>{"Name: " + name}</p>
+          <p>Phone number: <a href={phoneRef}>{phone}</a></p>
+          <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
+          <p>Instagram: <a href={instaRef}>{insta}</a></p>
         </div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <IconButton
@@ -280,7 +303,7 @@ function HomeScreen() {
         <ArrowLeft/>
         </IconButton>
 
-        <p>{predictionIndex + 1}</p>
+        <p>{predictionIndexPrint + 1}</p>
 
         <IconButton
         onClick={handleRight}
