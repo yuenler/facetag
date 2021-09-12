@@ -118,7 +118,7 @@ function HomeScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         descriptor = detectionWithDescriptors.descriptor;
-        setPrediction("The scanned face does not match any face in our database.")
+        setPrediction("Processing...If no prediction appears in a few seconds, this means that the scanned face does not match any face in our database.")
         compareFaces();
       }
       else{
