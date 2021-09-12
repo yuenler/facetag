@@ -4,6 +4,9 @@ import Webcam from "react-webcam";
 import * as faceapi from 'face-api.js';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import ArrowRight from '@material-ui/icons/ArrowRight';
+import ArrowLeft from '@material-ui/icons/ArrowLeft';
+
 import Favorite from '@material-ui/icons/Favorite';
 import { useHistory } from "react-router-dom"
 import { GoogleLogout } from 'react-google-login';
@@ -11,7 +14,6 @@ import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
 
@@ -48,18 +50,20 @@ function HomeScreen() {
   const [predictionOut, setPredictionOut] = useState(false);
 
   const [buttonText, setButtonText] = useState("Run facial recognition")
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [snap, setSnap] = useState("");
-  const [insta, setInsta] = useState("");
   const [startedRunning, setStartedRunning] = useState(false)
+  const [predictionIndex, setPredictionIndex] = useState(0);
+  const [names, setNames] = useState([]);
+  const [phones, setPhones] = useState([]);
+  const [snaps, setSnaps] = useState([]);
+  const [instas, setInstas] = useState([]);
+  const [distances, setDistances] = useState([]);
 
-  const phoneRef = "sms:" + phone;
-  const instaRef = "instagram://user?username=" + insta;
-  const snapRef = "snapchat://add/" + snap;
+  let descriptor;
+
+  const phoneRef = "sms:" + phones[predictionIndex];
+  const instaRef = "instagram://user?username=" + instas[predictionIndex];
+  const snapRef = "snapchat://add/" + snaps[predictionIndex];
   const webcamRef = useRef(null);
-
-
 
   function handleProfile() {
     history.push("/profile")
@@ -74,18 +78,35 @@ function HomeScreen() {
    });
   }
 
-
-  let descriptor;
-
   const handleRunFaceapi = () => {
     setButtonText("Running facial recognition...");
     setStartedRunning(true)
-    setName("");
-    setPhone("");
-    setSnap("");
-    setInsta("");
+    setNames([]);
+    setPhones([]);
+    setSnaps([]);
+    setInstas([]);
+    setDistances([]);
     setPredictionOut(false);
     runFaceapi()
+    
+  }
+
+  const handleLeft = () => {
+    if (predictionIndex === 0){
+      setPredictionIndex(distances.length - 1);
+    }
+    else{
+      setPredictionIndex(predictionIndex - 1);
+    }
+  }
+
+  const handleRight = () => {
+    if (predictionIndex === distances.length - 1){
+      setPredictionIndex(0);
+    }
+    else{
+      setPredictionIndex(predictionIndex + 1);
+    }
   }
 
 
@@ -125,21 +146,45 @@ function HomeScreen() {
     }
   };
 
+  const determineInsertionIndex = (distances, distance) => {
+    let index = 0
+    if (distances.length === 0){
+      return index
+    }
+
+    while (distances[index] < distance){
+      index++
+    }
+    return index
+  }
+
   const compareFaces = () => {
-    let closest = 1
+    var names = [];
+    var phones = [];
+    var snaps = [];
+    var instas = [];
+    var distances = [];
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let distance = 1;
       if (user.descriptor != null){
        distance = faceapi.euclideanDistance(user.descriptor, descriptor)
       }
-      if (distance < closest && distance < 0.5){
-        closest = distance
+      if (distance < 0.5){
+        let index = determineInsertionIndex(distances, distance)
+        setPredictionIndex(0)
         setPredictionOut(true)
-        setName(user.name)
-        setPhone(user.phone)
-        setSnap(user.snap)
-        setInsta(user.insta)
+        distances.splice(index,0,distance)
+        names.splice(index, 0, user.name); 
+        phones.splice(index, 0, user.phone); 
+        snaps.splice(index, 0, user.snap); 
+        instas.splice(index, 0, user.insta);
+        
+        setDistances(distances)
+        setNames(names)
+        setPhones(phones)
+        setSnaps(snaps)
+        setInstas(instas)
         setPrediction('')
       }
     })	
@@ -222,11 +267,28 @@ function HomeScreen() {
       <hr/>
       <p>{prediction}</p>
       {predictionOut?
-        <div style={{border: "2px solid black", backgroundColor: "lightgray", paddingTop: "10px"}}>
-          <p>{"Name: " + name}</p>
-          <p>Phone number: <a href={phoneRef}>{phone}</a></p>
-          <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
-          <p>Instagram: <a href={instaRef}>{insta}</a></p>
+        <div>
+        <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px"}}>
+          <p>{String(Math.round((1 - distances[predictionIndex])*100) + "% Match")}</p>
+          <p>{"Name: " + names[predictionIndex]}</p>
+          <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
+          <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>
+          <p>Instagram: <a href={instaRef}>{instas[predictionIndex]}</a></p>
+        </div>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <IconButton
+        onClick={handleLeft}>
+        <ArrowLeft/>
+        </IconButton>
+
+        <p>{predictionIndex + 1}</p>
+
+        <IconButton
+        onClick={handleRight}
+        >
+        <ArrowRight/>
+        </IconButton>
+        </div>
         </div>
         : null
       }
