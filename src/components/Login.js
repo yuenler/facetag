@@ -27,10 +27,13 @@ export default function LoginScreen() {
   }
 
   return (
-
+    <div>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <img src="./icon.png" width="150" height="150" ></img>
+      </div>
       <Card style={{backgroundColor: '#A51C30'}}>
         <Card.Body>
-          <h2 className="text-center mb-4" style={{color: 'white'}}>Nametag</h2>
+          <h2 className="text-center mb-4" style={{color: 'white'}}>Facetag</h2>
           <div style={{display: 'flex', justifyContent: 'center'}}>
               <GoogleLogin
                 clientId='686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com'
@@ -45,6 +48,7 @@ export default function LoginScreen() {
 
         </Card.Body>
       </Card>
+    </div>
 
   )
 }

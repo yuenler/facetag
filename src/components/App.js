@@ -8,24 +8,24 @@ import PrivateRoute from "./PrivateRoute"
 import HomeScreen from "./screens/Home.Screen"
 import * as faceapi from 'face-api.js';
 import { useReactPWAInstall } from "react-pwa-install";
-
+import icon from './icon.png'
 
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
   const [isLoaded, setIsLoaded] = useState(false)
   const handlePopup = () => {
     pwaInstall({
-      title: "Install Nametag to device",
-      logo: './myLogo.png',
+      title: "Install Facetag to device",
+      logo: icon,
     })
       .then(() => console.log("App installed successfully or instructions for install shown"))
       .catch(() => console.log("User opted out from installing"));
   };
 
   async function loadModels () {
-    await faceapi.loadSsdMobilenetv1Model('/nametag/models');
-    await faceapi.loadFaceLandmarkModel('/nametag/models');
-    await faceapi.loadFaceRecognitionModel('/nametag/models');
+    await faceapi.loadSsdMobilenetv1Model('/facetag/models');
+    await faceapi.loadFaceLandmarkModel('/facetag/models');
+    await faceapi.loadFaceRecognitionModel('/facetag/models');
     setIsLoaded(true)
   }
   
@@ -46,7 +46,7 @@ function App() {
     >
       {isLoaded?
       <div className="w-100" style={{ maxWidth: "400px" }}>
-        <Router basename="/nametag">
+        <Router basename="/facetag">
           <AuthProvider>
             <Switch>
               <PrivateRoute exact path="/" component={HomeScreen} />

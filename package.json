@@ -1,5 +1,5 @@
 {
-  "homepage": "https://yuenler.github.io/nametag",
+  "homepage": "https://yuenler.github.io/facetag",
   "name": "nametag",
   "version": "0.1.0",
   "private": true,
@@ -27,6 +27,7 @@
     "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",
+    "react-image-resizer": "^1.3.0",
     "react-p5-wrapper": "^2.4.1",
     "react-pwa-install": "^1.0.12",
     "react-router-dom": "^5.3.0",
