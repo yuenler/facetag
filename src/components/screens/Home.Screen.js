@@ -172,7 +172,6 @@ function HomeScreen() {
       }
       if (distance < 0.5){
         let index = determineInsertionIndex(distances, distance)
-        setPredictionIndex(0)
         setPredictionOut(true)
         distances.splice(index,0,distance)
         names.splice(index, 0, user.name); 
@@ -186,6 +185,7 @@ function HomeScreen() {
         setSnaps(snaps)
         setInstas(instas)
         setPrediction('')
+        setPredictionIndex(0)
       }
     })	
   }
