@@ -27,9 +27,9 @@ function App() {
   };
 
   async function loadModels () {
-    await faceapi.loadSsdMobilenetv1Model('/facetag/models');
-    await faceapi.loadFaceLandmarkModel('/facetag/models');
-    await faceapi.loadFaceRecognitionModel('/facetag/models');
+    await faceapi.loadSsdMobilenetv1Model('/models');
+    await faceapi.loadFaceLandmarkModel('/models');
+    await faceapi.loadFaceRecognitionModel('/models');
     setIsLoaded(true)
     const input = document.getElementById('myImg')
     await faceapi.detectSingleFace(input).withFaceLandmarks().withFaceDescriptor()
