@@ -58,26 +58,38 @@ function App() {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      {!isLoaded? 
-          <p>Loading face detector model...</p>: null
+      <div style={{textAlign: 'center'}}>
+      {!isLoaded3?
+      <div>
+      <img src={icon192}></img>
+      </div>
+      :null}
+      {!isLoaded?
+          <div style={{textAlign: 'center'}}> 
+          <p>Loading face detector model...</p>
+          <p></p>
+          <p></p>
+          </div>: null
             }
 
         {(isLoaded && !isLoaded2)? 
-          <div>
+          <div style={{textAlign: 'center'}}>
             <p>Successfully loaded face detector model.</p>
           <p>Loading facial landmark detection model...</p>
+          <p></p>
           </div>: null
             }
 
         {(isLoaded && isLoaded2 && !isLoaded3)? 
-          <div
-          ><p>Successfully loaded face detector model.</p>
+          <div style={{textAlign: 'center'}}>
+            <p>Successfully loaded face detector model.</p>
           <p>Successfully facial landmark detection model.</p>
           <p>Loading face descriptor model...</p>
           </div>: null
             }
+        </div>
 
-        {(isLoaded && isLoaded2 && isLoaded3 && !isRan)?
+        {(isLoaded3 && !isRan)?
         <div  style={{textAlign: 'center'}}>
         <p>Warming up facial recognition models with Hermione Granger...</p>
         <div style={{display: 'flex', justifyContent: 'center'}}>
