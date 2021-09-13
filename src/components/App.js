@@ -45,8 +45,11 @@ function App() {
 
   useEffect(() => {
     pwaOption()
-    // loadModels()
-  });
+  })
+  
+  useEffect(() => {
+    loadModels()
+  },[]);
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
