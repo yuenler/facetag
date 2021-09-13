@@ -9,11 +9,14 @@ import HomeScreen from "./screens/Home.Screen"
 import * as faceapi from 'face-api.js';
 import { useReactPWAInstall } from "react-pwa-install";
 import icon192 from './icon192.png'
+import hermione from './hermione.jpg';
 
 
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isRan, setIsRan] = useState(false)
+
   const handlePopup = () => {
     pwaInstall({
       title: "Install Facetag to device",
@@ -28,6 +31,10 @@ function App() {
     await faceapi.loadFaceLandmarkModel('/facetag/models');
     await faceapi.loadFaceRecognitionModel('/facetag/models');
     setIsLoaded(true)
+    const input = document.getElementById('myImg')
+    await faceapi.detectSingleFace(input).withFaceLandmarks().withFaceDescriptor()
+    setIsRan(true)
+
   }
   
   function pwaOption(){
@@ -39,13 +46,26 @@ function App() {
   useEffect(() => {
     pwaOption()
     loadModels()
-  });
+  },[]);
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      {isLoaded?
+      {!isLoaded? 
+          <p>Loading facial recognition models...</p>: null
+            }
+
+        {(isLoaded && !isRan)?
+        <div>
+        <p>Testing facial recognition models on Hermione Granger...</p>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <img id='myImg' src={hermione} width="150" height="150"  ></img>
+        </div>
+        </div>
+        : null
+        }
+      {isRan?
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router basename="/facetag">
           <AuthProvider>
@@ -57,7 +77,7 @@ function App() {
             </Switch>
           </AuthProvider>
         </Router>
-      </div>: <p>Loading facial recognition models...</p>
+      </div>: null
     }
       
     </Container>

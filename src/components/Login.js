@@ -38,7 +38,6 @@ export default function LoginScreen() {
   return (
     <div>
       <div style={{display: 'flex', justifyContent: 'center'}}>
-      <img src="./icon.png" width="150" height="150" ></img>
       </div>
       <Card style={{backgroundColor: '#A51C30'}}>
         <Card.Body>
