@@ -83,7 +83,7 @@ function App() {
         {(isLoaded && isLoaded2 && !isLoaded3)? 
           <div style={{textAlign: 'center'}}>
             <p>Successfully loaded face detector model.</p>
-          <p>Successfully facial landmark detection model.</p>
+          <p>Successfully loaded facial landmark detection model.</p>
           <p>Loading face descriptor model...</p>
           </div>: null
             }
