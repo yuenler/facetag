@@ -13,6 +13,7 @@ export default function LoginScreen() {
   const history = useHistory()
 
   async function handleLogin(res) {
+      console.log('done')
       let email = res.profileObj.email
       var idxHarvard = email.indexOf('@college.harvard.edu');
       if (idxHarvard === -1) {
@@ -49,7 +50,6 @@ export default function LoginScreen() {
                 onSuccess={handleLogin}
                 onFailure={responseGoogle}
                 cookiePolicy={'single_host_origin'}
-                uxMode="popup"
             />
             </div>
 

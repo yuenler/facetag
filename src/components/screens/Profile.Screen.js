@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-
+import Camera from '@material-ui/icons/Camera';
 import Error from '@material-ui/icons/Error';
 
 import Home from '@material-ui/icons/Home';
@@ -31,7 +31,8 @@ function ProfileScreen() {
   const FACING_MODE_ENVIRONMENT = "environment";
 
   const videoConstraints = {
-    facingMode: FACING_MODE_USER
+    facingMode: FACING_MODE_USER,
+    aspectRatio: 1,
   };
 
   const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
@@ -45,6 +46,8 @@ function ProfileScreen() {
       );
     }, []);
 
+  
+
   const classes = useStyles();
   const history = useHistory()
   const { currentUser } = useAuth()
@@ -55,8 +58,7 @@ function ProfileScreen() {
   const snapRef = useRef()
   
   const [openCamera, setOpenCamera] = useState(false);
-  const [prediction, setPrediction] = useState("Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the button above.")
-  const [buttonText, setButtonText] = useState("Run facial recognition")
+  const [prediction, setPrediction] = useState("Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the shutter.")
   const [doneRunning, setDoneRunning] = useState(false)
   const [startedRunning, setStartedRunning] = useState(true)
   const [descriptor, setDescriptor] = useState(null);
@@ -125,12 +127,9 @@ function ProfileScreen() {
 
   const handleRunFaceapi = () => {
     setStartedRunning(true)
-    setButtonText("Running facial recognition...")
     runFaceapi()
     
   }
-
-
 
   const runFaceapi = async () => {
       setDescriptor(null);
@@ -155,7 +154,6 @@ function ProfileScreen() {
       else{
         setPrediction('No face detected, please try again.')
       }
-      setButtonText("Run facial recognition")
       setStartedRunning(false)
      
     }
@@ -165,6 +163,7 @@ function ProfileScreen() {
     retrieveData()
   }, []);
 
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -191,8 +190,7 @@ function ProfileScreen() {
             right: 0,
             textAlign: "center",
             zindex: 9,
-            width: 300,
-            height: 300,
+            width: "100%",
           }}
           videoConstraints={{
             ...videoConstraints,
@@ -201,24 +199,20 @@ function ProfileScreen() {
           mirrored={facingMode === FACING_MODE_USER}
         />
     {!doneRunning?
-      <div>
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        onClick={() => handleRunFaceapi() }
-      >
-        {buttonText}
-      </Button>
-
-      {!startedRunning?
-      <IconButton onClick={handleClick}>
-        <FlipCameraIos/>
-        </IconButton>: null
-      }
-
-      </div>
+       <div style={{marginTop: -100, textAlign: 'center'}}>
+       <IconButton
+         variant="contained"
+         className={classes.button}
+         onClick={() => handleRunFaceapi() }
+         >
+         <Camera style={{width: 50, height: 50, color: '#FFFFFF'}} />
+       </IconButton>
+       {!startedRunning?
+   <IconButton onClick={handleClick}>
+     <FlipCameraIos style={{width: 50, height: 50, color: '#FFFFFF'}}/>
+     </IconButton>: null
+   }
+   </div>
       
       :
       <div>
@@ -233,7 +227,9 @@ function ProfileScreen() {
             </Button>
       </div>
       }
+        <div style={{marginTop: 10}}>
         <p>{prediction}</p>
+        </div>
         
       </div>
 

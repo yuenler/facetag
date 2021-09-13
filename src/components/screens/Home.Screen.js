@@ -14,6 +14,8 @@ import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
+import Camera from '@material-ui/icons/Camera';
+
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
 
@@ -31,12 +33,14 @@ var instas = [];
 var predictionIndex = 0;
 
 function HomeScreen() {
+ 
 
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
 
   const videoConstraints = {
-    facingMode: FACING_MODE_USER
+    facingMode: FACING_MODE_USER,
+    aspectRatio: 1,
   };
 
     const [facingMode, setFacingMode] = React.useState(FACING_MODE_ENVIRONMENT);
@@ -53,10 +57,9 @@ function HomeScreen() {
   const history = useHistory()
   const { changeUser, currentUser } = useAuth()
   const classes = useStyles()
-  const [prediction, setPrediction] = useState("Hold the phone so that the person's face takes up the majority of the screen, but no part of their head is cut off. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the button above.");
+  const [prediction, setPrediction] = useState("Hold the phone so that the face of the person you want to scan takes up the majority of the screen, but no part of their head is cut off. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the shutter.");
   const [predictionOut, setPredictionOut] = useState(false);
 
-  const [buttonText, setButtonText] = useState("Run facial recognition")
   const [startedRunning, setStartedRunning] = useState(false)
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -87,7 +90,6 @@ function HomeScreen() {
   }
 
   const handleRunFaceapi = () => {
-    setButtonText("Running facial recognition...");
     setStartedRunning(true)
     setName('');
     setPhone('');
@@ -167,7 +169,6 @@ function HomeScreen() {
       else{
         setPrediction('No face detected, please try again. If nothing works, try reloading the page.')
       }
-      setButtonText("Run facial recognition")
       setStartedRunning(false)
      
     }
@@ -251,6 +252,7 @@ function HomeScreen() {
 
       <div>
          
+          <div style={{width: '100%'}}>
           <Webcam
             ref={webcamRef}
             style={{
@@ -261,8 +263,7 @@ function HomeScreen() {
               right: 0,
               textAlign: "center",
               zindex: 9,
-              width: 300,
-              height: 300,
+             width: "100%",
             }}
             videoConstraints={{
               ...videoConstraints,
@@ -270,27 +271,27 @@ function HomeScreen() {
             }}
             mirrored={facingMode === FACING_MODE_USER}
           />
-          <Button
+          </div>
+          <div style={{marginTop: -100}}>
+          <IconButton
             variant="contained"
-            color="primary"
-            size="small"
             className={classes.button}
             onClick={() => handleRunFaceapi() }
             >
-            {buttonText}
-          </Button>
+            <Camera style={{width: 50, height: 50, color: '#FFFFFF'}} />
+          </IconButton>
           {!startedRunning?
       <IconButton onClick={handleClick}>
-        <FlipCameraIos/>
+        <FlipCameraIos style={{width: 50, height: 50, color: '#FFFFFF'}}/>
         </IconButton>: null
       }
+      </div>
 
 
       </div>
-      <p>{prediction}</p>
       {predictionOut?
         <div>
-        <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px"}}>
+        <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px", marginTop: "10px"}}>
           <p>{String(Math.round((1 - distance)*100) + "% match")}</p>
           <p>{"Name: " + name}</p>
           <p>Phone number: <a href={phoneRef}>{phone}</a></p>
@@ -312,7 +313,10 @@ function HomeScreen() {
         </IconButton>
         </div>
         </div>
-        : null
+        : 
+        <div style = {{paddingTop: "10px"}}>
+        <p>{prediction}</p>
+        </div>
       }
       <br/>
       </header>
