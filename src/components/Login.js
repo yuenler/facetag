@@ -29,13 +29,13 @@ export default function LoginScreen() {
     console.log(response);
   };
 
-  // useEffect(() => {
-  //   const loggedInUser = localStorage.getItem("user");
-  //   if (loggedInUser) {
-  //     changeUser(loggedInUser);
-  //     history.push("/")
-  //   }
-  // }, []);
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      changeUser(loggedInUser);
+      history.push("/")
+    }
+  }, []);
 
   return (
     <div>
