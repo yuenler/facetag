@@ -67,7 +67,7 @@ function App() {
         }
       {isRan?
       <div className="w-100" style={{ maxWidth: "400px" }}>
-        <Router basename="/facetag">
+        <Router>
           <AuthProvider>
             <Switch>
               <PrivateRoute exact path="/" component={HomeScreen} />

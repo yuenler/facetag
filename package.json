@@ -1,6 +1,6 @@
 {
-  "homepage": "https://yuenler.github.io/facetag",
-  "name": "nametag",
+  // "homepage": "https://yuenler.github.io/facetag",
+  "name": "facetag",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
