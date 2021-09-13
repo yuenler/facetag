@@ -57,11 +57,9 @@ function App() {
             }
 
         {(isLoaded && !isRan)?
-        <div>
+        <div  style={{display: 'flex', justifyContent: 'center'}}>
         <p>Testing facial recognition models on Hermione Granger...</p>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
         <img id='myImg' src={hermione} width="150" height="150"  ></img>
-        </div>
         </div>
         : null
         }
