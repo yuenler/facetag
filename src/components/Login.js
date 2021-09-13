@@ -3,10 +3,7 @@ import {  Card } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
 import { GoogleLogin } from 'react-google-login';
-
-const responseGoogle = response => {
-  console.log(response);
-};
+import icon from './icon192.png'
 
 export default function LoginScreen() {
   const { changeUser } = useAuth()
@@ -28,17 +25,22 @@ export default function LoginScreen() {
       }      
   }
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      changeUser(loggedInUser);
-      history.push("/")
-    }
-  }, []);
+  const responseGoogle = response => {
+    console.log(response);
+  };
+
+  // useEffect(() => {
+  //   const loggedInUser = localStorage.getItem("user");
+  //   if (loggedInUser) {
+  //     changeUser(loggedInUser);
+  //     history.push("/")
+  //   }
+  // }, []);
 
   return (
     <div>
       <div style={{display: 'flex', justifyContent: 'center'}}>
+        <img src={icon}/>
       </div>
       <Card style={{backgroundColor: '#A51C30'}}>
         <Card.Body>
