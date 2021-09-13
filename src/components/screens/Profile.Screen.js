@@ -227,7 +227,7 @@ function ProfileScreen() {
             </Button>
       </div>
       }
-        <div style={{marginTop: 10}}>
+        <div style={{marginTop: '20px'}}>
         <p>{prediction}</p>
         </div>
         

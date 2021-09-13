@@ -314,7 +314,7 @@ function HomeScreen() {
         </div>
         </div>
         : 
-        <div style = {{paddingTop: "10px"}}>
+        <div style = {{marginTop: "20px"}}>
         <p>{prediction}</p>
         </div>
       }
