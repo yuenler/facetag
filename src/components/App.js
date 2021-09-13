@@ -15,6 +15,9 @@ import hermione from './hermione.jpg';
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded2, setIsLoaded2] = useState(false)
+  const [isLoaded3, setIsLoaded3] = useState(false)
+
   const [isRan, setIsRan] = useState(false)
 
   const handlePopup = () => {
@@ -28,9 +31,11 @@ function App() {
 
   async function loadModels () {
     await faceapi.loadSsdMobilenetv1Model('/models');
-    await faceapi.loadFaceLandmarkModel('/models');
-    await faceapi.loadFaceRecognitionModel('/models');
     setIsLoaded(true)
+    await faceapi.loadFaceLandmarkModel('/models');
+    setIsLoaded2(true)
+    await faceapi.loadFaceRecognitionModel('/models');
+    setIsLoaded3(true)
     const input = document.getElementById('myImg')
     await faceapi.detectSingleFace(input).withFaceLandmarks().withFaceDescriptor()
     setIsRan(true)
@@ -54,10 +59,25 @@ function App() {
       style={{ minHeight: "100vh" }}
     >
       {!isLoaded? 
-          <p>Loading facial recognition models...</p>: null
+          <p>Loading face detector model...</p>: null
             }
 
-        {(isLoaded && !isRan)?
+        {(isLoaded && !isLoaded2)? 
+          <div>
+            <p>Successfully loaded face detector model.</p>
+          <p>Loading facial landmark detection model...</p>
+          </div>: null
+            }
+
+        {(isLoaded && isLoaded2 && !isLoaded3)? 
+          <div
+          ><p>Successfully loaded face detector model.</p>
+          <p>Successfully facial landmark detection model.</p>
+          <p>Loading face descriptor model...</p>
+          </div>: null
+            }
+
+        {(isLoaded && isLoaded2 && isLoaded3 && !isRan)?
         <div  style={{textAlign: 'center'}}>
         <p>Warming up facial recognition models with Hermione Granger...</p>
         <div style={{display: 'flex', justifyContent: 'center'}}>
