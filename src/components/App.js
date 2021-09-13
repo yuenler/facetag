@@ -34,7 +34,7 @@ function App() {
     const input = document.getElementById('myImg')
     await faceapi.detectSingleFace(input).withFaceLandmarks().withFaceDescriptor()
     setIsRan(true)
-
+    pwaOption()
   }
   
   function pwaOption(){
@@ -43,9 +43,6 @@ function App() {
     }
 }
 
-  useEffect(() => {
-    pwaOption()
-  })
 
   useEffect(() => {
     loadModels()
