@@ -22,7 +22,7 @@ function App() {
 
   const handlePopup = () => {
     pwaInstall({
-      title: "Install Facetag to device",
+      title: "Install FaceTag to device",
       logo: icon192,
     })
       .then(() => console.log("App installed successfully or instructions for install shown"))
