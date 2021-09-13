@@ -1,0 +1,47 @@
+[debug] [2021-09-13T02:12:49.990Z] ----------------------------------------------------------------------
+[debug] [2021-09-13T02:12:49.993Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\cyler\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2021-09-13T02:12:49.994Z] CLI Version:   9.18.0
+[debug] [2021-09-13T02:12:49.994Z] Platform:      win32
+[debug] [2021-09-13T02:12:49.994Z] Node Version:  v14.15.4
+[debug] [2021-09-13T02:12:49.996Z] Time:          Sun Sep 12 2021 22:12:49 GMT-0400 (Eastern Daylight Time)
+[debug] [2021-09-13T02:12:49.996Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-09-13T02:12:50.086Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-09-13T02:12:50.087Z] > authorizing via signed-in user (lerchow@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\cyler\facetag
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  .firebaserc already has a default project, using nametag-de54e. 
+[debug] [2021-09-13T02:12:53.978Z] > refreshing access token with scopes: []
+[debug] [2021-09-13T02:12:53.979Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-09-13T02:12:54.120Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Mon, 13 Sep 2021 02:12:55 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-09-13T02:12:54.159Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nametag-de54e [none]
+[debug] [2021-09-13T02:12:54.352Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nametag-de54e 200
+[debug] [2021-09-13T02:12:54.353Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nametag-de54e {"projectId":"nametag-de54e","projectNumber":"686023333837","displayName":"Facetag","name":"projects/nametag-de54e","resources":{"hostingSite":"nametag-de54e","realtimeDatabaseInstance":"nametag-de54e-default-rtdb"},"state":"ACTIVE"}
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
