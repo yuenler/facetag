@@ -45,8 +45,8 @@ function App() {
 
   useEffect(() => {
     pwaOption()
-    loadModels()
-  },[]);
+    // loadModels()
+  });
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
@@ -73,7 +73,6 @@ function App() {
               <PrivateRoute exact path="/" component={HomeScreen} />
               <PrivateRoute path="/profile" component={ProfileScreen} />
               <Route path="/login" component={LoginScreen} />
-
             </Switch>
           </AuthProvider>
         </Router>
