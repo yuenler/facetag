@@ -174,7 +174,7 @@ function ProfileScreen() {
 } 
 
   useEffect(() => {
-    if (!user.uid) {
+    if (!user || !user.uid) {
       setredirect("/login");
     }
     else if (isOutsider(user.email)){

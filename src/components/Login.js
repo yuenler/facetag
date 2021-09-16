@@ -28,7 +28,7 @@ export default function LoginScreen() {
         <Card.Body>
           <h2 className="text-center mb-4" style={{color: 'white'}}>FaceTag</h2>
           <div style = {{display: 'flex', justifyContent: 'center'}}>
-        <input type="image" onClick={signInWithGoogle} src={google} alt="Sign in with Google"/>
+        <input type="image" style={{width: '70%'}} onClick={signInWithGoogle} src={google} alt="Sign in with Google"/>
       </div>
 
         </Card.Body>
