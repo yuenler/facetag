@@ -1,5 +1,7 @@
-import React, { useRef, useEffect, useState } from "react";
-import firebase from "firebase";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import firebase from "firebase/app";
+import "firebase/database"
+
 import { Form } from "react-bootstrap"
 import Webcam from "react-webcam";
 import IconButton from '@material-ui/core/IconButton';
@@ -15,9 +17,10 @@ import CameraAlt from '@material-ui/icons/CameraAlt';
 import * as faceapi from 'face-api.js';
 import {useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
-import { useAuth } from "../../contexts/AuthContext"
 
-
+import { UserContext } from "../../UserProvider";
+import { Redirect } from "react-router-dom";
+import { logOut } from "../../firebase";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -27,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ProfileScreen() {
+  const user = useContext(UserContext);
+  const [redirect, setredirect] = useState(null);
   const FACING_MODE_USER = "user";
   const FACING_MODE_ENVIRONMENT = "environment";
 
@@ -50,7 +55,6 @@ function ProfileScreen() {
 
   const classes = useStyles();
   const history = useHistory()
-  const { currentUser } = useAuth()
   const webcamRef = useRef(null);
   const nameRef = useRef()
   const phoneRef = useRef()
@@ -68,7 +72,7 @@ function ProfileScreen() {
   const [snap, setSnap] = useState(null)
 
   function retrieveData() {
-    firebase.database().ref('Users/' + currentUser).once("value", snapshot => {
+    firebase.database().ref('Users/' + user.uid).once("value", snapshot => {
       if (snapshot.exists()){
          setDescriptor(snapshot.val().descriptor)
          setName(snapshot.val().name)
@@ -93,7 +97,7 @@ function ProfileScreen() {
       alert("Please scan your face and fill in your name.")
     }
     else{
-    firebase.database().ref('Users/' + currentUser).set({
+    firebase.database().ref('Users/' + user.uid).set({
 			descriptor: descriptor,
       name: nameRef.current.value,
       phone: phoneRef.current.value,
@@ -159,9 +163,30 @@ function ProfileScreen() {
     }
   };
 
+  
+  function isOutsider(email) {
+    var idxHarvard = email.indexOf('@college.harvard.edu');
+    if (idxHarvard === -1) {
+      alert("Please sign in using your Harvard College email address!");
+      return true;
+    }
+    return false;   
+} 
+
   useEffect(() => {
-    retrieveData()
-  }, []);
+    if (!user.uid) {
+      setredirect("/login");
+    }
+    else if (isOutsider(user.email)){
+      logOut()
+    }
+    else{
+      retrieveData()
+    }
+  }, [user]);
+  if (redirect) {
+    return <Redirect to={redirect} />;
+  }
 
   
   return (

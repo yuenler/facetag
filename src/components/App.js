@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from "react"
 import { Container } from "react-bootstrap"
-import { AuthProvider } from "../contexts/AuthContext"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import LoginScreen from "./Login"
 import ProfileScreen from "./screens/Profile.Screen"
-import PrivateRoute from "./PrivateRoute"
 import HomeScreen from "./screens/Home.Screen"
 import * as faceapi from 'face-api.js';
 import { useReactPWAInstall } from "react-pwa-install";
 import icon192 from './icon192.png'
 import hermione from './hermione.jpg';
+import UserProvider from "../UserProvider";
 
 
 function App() {
@@ -54,6 +53,8 @@ function App() {
   },[]);
   
   return (
+    <UserProvider>
+
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
@@ -61,7 +62,7 @@ function App() {
       <div style={{textAlign: 'center'}}>
       {!isLoaded3?
       <div>
-      <img src={icon192}></img>
+      <img src={icon192} alt=""></img>
       </div>
       :null}
       {!isLoaded?
@@ -93,7 +94,7 @@ function App() {
         <div  style={{textAlign: 'center'}}>
         <p>Warming up facial recognition models with Hermione Granger...</p>
         <div style={{display: 'flex', justifyContent: 'center'}}>
-        <img id='myImg' src={hermione} width="150" height="150"  ></img>
+        <img id='myImg' src={hermione} width="150" height="150"  alt=""></img>
         </div>
         </div>
         : null
@@ -101,18 +102,18 @@ function App() {
       {isRan?
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router>
-          <AuthProvider>
             <Switch>
-              <PrivateRoute exact path="/" component={HomeScreen} />
-              <PrivateRoute path="/profile" component={ProfileScreen} />
               <Route path="/login" component={LoginScreen} />
+              <Route exact path="/" component={HomeScreen} />
+              <Route path="/profile" component={ProfileScreen} />
             </Switch>
-          </AuthProvider>
         </Router>
       </div>: null
     }
       
     </Container>
+    </UserProvider>
+
   )
 }
 

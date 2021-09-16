@@ -1,21 +1,25 @@
-import React, { useRef, useEffect, useState } from "react";
-import firebase from "firebase";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import firebase from "firebase/app"
+import "firebase/database"
+
 import Webcam from "react-webcam";
 import * as faceapi from 'face-api.js';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import ArrowLeft from '@material-ui/icons/ArrowLeft';
+import ExitToApp from '@material-ui/icons/ExitToApp';
 
 import Favorite from '@material-ui/icons/Favorite';
 import { useHistory } from "react-router-dom"
-import { GoogleLogout } from 'react-google-login';
-import { useAuth } from "../../contexts/AuthContext"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 import Camera from '@material-ui/icons/Camera';
 
+import { logOut } from "../../firebase";
+import { UserContext } from "../../UserProvider";
+import { Redirect } from "react-router-dom";
 
 // document.getElementsByTagName("body")[0].style.backgroundColor = "black";
 
@@ -33,6 +37,8 @@ var instas = [];
 var predictionIndex = 0;
 
 function HomeScreen() {
+  const user = useContext(UserContext);
+  const [redirect, setredirect] = useState(null);
  
 
   const FACING_MODE_USER = "user";
@@ -55,7 +61,6 @@ function HomeScreen() {
     }, []);
 
   const history = useHistory()
-  const { changeUser, currentUser } = useAuth()
   const classes = useStyles()
   const [prediction, setPrediction] = useState("Hold the phone so that the face of the person you want to scan takes up the majority of the screen, but no part of their head is cut off. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the shutter.");
   const [predictionOut, setPredictionOut] = useState(false);
@@ -81,7 +86,7 @@ function HomeScreen() {
   }
 
   const checkProfileExistence = () => {
-    firebase.database().ref('Users/' + currentUser).once("value", snapshot => {
+    firebase.database().ref('Users/' + user.uid).once("value", snapshot => {
       if (!snapshot.exists()){
          history.push("/profile")
          alert('Please fill out your profile first!')
@@ -138,12 +143,6 @@ function HomeScreen() {
 
   }
 
-
-  async function logout() {
-    await changeUser(null)
-    localStorage.removeItem('user')
-    history.push("/login")
-  }
 
   const runFaceapi = async () => {
       descriptor = null;
@@ -214,20 +213,43 @@ function HomeScreen() {
     })
   }
 
+  function isOutsider(email) {
+      var idxHarvard = email.indexOf('@college.harvard.edu');
+      if (idxHarvard === -1) {
+        alert("Please sign in using your Harvard College email address!");
+        return true;
+      }
+      return false;   
+  } 
+
+
   useEffect(() => {
-    checkProfileExistence()
-  },[]);
+    if (!user.uid) {
+      setredirect("/login");
+    }
+    else if (isOutsider(user.email)){
+      logOut()
+    }
+    else{
+      checkProfileExistence()
+    }
+  }, [user]);
+  if (redirect) {
+    return <Redirect to={redirect} />;
+  }
 
   return (
-    <div className="App" style={{textAlign: 'center', /*backgroundColor: "black", color: "white" */}}>
+    <div className="App" style={{textAlign: 'center', margin: 0, padding: 0 /*backgroundColor: "black", color: "white" */}}>
       <header className="App-header">
 
-      <GoogleLogout
-        clientId="686023333837-p65ka8pm804ual7o284tholp22pll81s.apps.googleusercontent.com"
-        buttonText="Logout"
-        onLogoutSuccess={logout}
-      >
-      </GoogleLogout>
+      <Button 
+      variant="contained"
+      color="default"
+      size="small"
+      startIcon={<ExitToApp/>}
+      onClick={logOut}>
+        Logout
+      </Button>
 
       <Button
         variant="contained"
