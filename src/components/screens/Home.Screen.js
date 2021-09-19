@@ -81,6 +81,7 @@ function HomeScreen() {
   const snapRef = "snapchat://add/" + snaps[predictionIndex];
   const webcamRef = useRef(null);
 
+
   function handleProfile() {
     history.push("/profile")
   }
@@ -294,19 +295,22 @@ function HomeScreen() {
             mirrored={facingMode === FACING_MODE_USER}
           />
           </div>
-          <div style={{marginTop: -100}}>
+          <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
             className={classes.button}
             onClick={() => handleRunFaceapi() }
-            >
-            <CameraAlt style={{width: 50, height: 50, color: '#ff0d00'}} />
+            >            
+            <CameraAlt style={{width: 70, height: 70, color: '#FFFFFF'}} />
           </IconButton>
+
+          <div style={{position: 'absolute', right: 0, top: 30}}>
           {!startedRunning?
       <IconButton onClick={handleClick}>
-        <FlipCameraIos style={{width: 50, height: 50, color: '#FFFFFF'}}/>
+        <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
         </IconButton>: null
       }
+      </div>
       </div>
 
 

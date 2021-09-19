@@ -21,6 +21,7 @@ import { UserContext } from "../../UserProvider";
 import { Redirect } from "react-router-dom";
 import { logOut } from "../../firebase";
 
+
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
@@ -69,6 +70,7 @@ function ProfileScreen() {
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
+
 
   function retrieveData() {
     firebase.database().ref('Users/' + user.uid).once("value", snapshot => {
@@ -223,19 +225,22 @@ function ProfileScreen() {
           mirrored={facingMode === FACING_MODE_USER}
         />
     {!doneRunning?
-       <div style={{marginTop: -100, textAlign: 'center'}}>
+       <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
        <IconButton
          variant="contained"
          className={classes.button}
          onClick={() => handleRunFaceapi() }
-         >
-         <CameraAlt style={{width: 50, height: 50, color: '#ff0d00'}} />
+         >            
+         <CameraAlt style={{width: 70, height: 70, color: '#FFFFFF'}} />
        </IconButton>
+
+       <div style={{position: 'absolute', right: 0, top: 30}}>
        {!startedRunning?
    <IconButton onClick={handleClick}>
-     <FlipCameraIos style={{width: 50, height: 50, color: '#FFFFFF'}}/>
+     <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
      </IconButton>: null
    }
+   </div>
    </div>
       
       :
