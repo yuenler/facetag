@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-import Camera from '@material-ui/icons/Camera';
+import CameraAlt from '@material-ui/icons/CameraAlt';
 
 import { logOut } from "../../firebase";
 import { UserContext } from "../../UserProvider";
@@ -300,7 +300,7 @@ function HomeScreen() {
             className={classes.button}
             onClick={() => handleRunFaceapi() }
             >
-            <Camera style={{width: 50, height: 50, color: '#FFFFFF'}} />
+            <CameraAlt style={{width: 50, height: 50, color: '#ff0d00'}} />
           </IconButton>
           {!startedRunning?
       <IconButton onClick={handleClick}>

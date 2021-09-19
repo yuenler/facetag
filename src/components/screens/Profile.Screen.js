@@ -9,11 +9,10 @@ import Button from '@material-ui/core/Button';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
-import Camera from '@material-ui/icons/Camera';
+import CameraAlt from '@material-ui/icons/CameraAlt';
 import Error from '@material-ui/icons/Error';
 
 import Home from '@material-ui/icons/Home';
-import CameraAlt from '@material-ui/icons/CameraAlt';
 import * as faceapi from 'face-api.js';
 import {useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
@@ -230,7 +229,7 @@ function ProfileScreen() {
          className={classes.button}
          onClick={() => handleRunFaceapi() }
          >
-         <Camera style={{width: 50, height: 50, color: '#FFFFFF'}} />
+         <CameraAlt style={{width: 50, height: 50, color: '#ff0d00'}} />
        </IconButton>
        {!startedRunning?
    <IconButton onClick={handleClick}>
