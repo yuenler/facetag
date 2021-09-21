@@ -11,12 +11,12 @@ import Clear from '@material-ui/icons/Clear';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 import CameraAlt from '@material-ui/icons/CameraAlt';
 import Error from '@material-ui/icons/Error';
-
 import Home from '@material-ui/icons/Home';
 import * as faceapi from 'face-api.js';
 import {useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
-
+import Toggle from 'react-toggle'
+import "react-toggle/style.css" 
 import { UserContext } from "../../UserProvider";
 import { Redirect } from "react-router-dom";
 import { logOut } from "../../firebase";
@@ -70,7 +70,8 @@ function ProfileScreen() {
   const [phone, setPhone] = useState(null)
   const [insta, setInsta] = useState(null)
   const [snap, setSnap] = useState(null)
-
+  const [privateProfile, setPrivateProfile] = useState(false);
+  
 
   function retrieveData() {
     firebase.database().ref('Users/' + user.uid).once("value", snapshot => {
@@ -80,6 +81,7 @@ function ProfileScreen() {
          setPhone(snapshot.val().phone)
          setInsta(snapshot.val().insta)
          setSnap(snapshot.val().snap)
+         setPrivateProfile(snapshot.val().private)
       }
    });
 
@@ -98,12 +100,13 @@ function ProfileScreen() {
       alert("Please scan your face and fill in your name.")
     }
     else{
-    firebase.database().ref('Users/' + user.uid).set({
+    firebase.database().ref('Users/' + user.uid).update({
 			descriptor: descriptor,
       name: nameRef.current.value,
       phone: phoneRef.current.value,
       insta: instaRef.current.value,
       snap: snapRef.current.value,
+      private: privateProfile,
 		  },
 		  (error) => {
 				console.log(error);
@@ -265,6 +268,14 @@ function ProfileScreen() {
         :
         <div>
           <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>
+          <div style={{display: 'flex'}}>
+          
+          <div style={{marginRight: 10}}><label>Private profile?</label></div>
+          <Toggle
+        checked={privateProfile}
+        onChange={() => setPrivateProfile(!privateProfile)}
+         />
+      </div>
           <Form>
      
                 <Button
@@ -290,20 +301,26 @@ function ProfileScreen() {
               <Form.Control ref={nameRef} defaultValue = {name} placeholder="John Harvard" required />
             </Form.Group>
 
+          
+
             <Form.Group id="phone">
               <Form.Label>Phone number</Form.Label>
               <Form.Control placeholder="555-555-5555" defaultValue = {phone} ref={phoneRef}  />
             </Form.Group>
+
+         
 
             <Form.Group id="insta">
               <Form.Label>Instagram</Form.Label>
               <Form.Control placeholder="username" defaultValue = {insta} ref={instaRef}  />
             </Form.Group>
 
+
             <Form.Group id="snap">
               <Form.Label>Snapchat</Form.Label>
               <Form.Control placeholder="username" defaultValue = {snap} ref={snapRef}  />
             </Form.Group>
+
             </div>
             
             <Button

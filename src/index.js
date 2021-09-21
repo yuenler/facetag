@@ -7,9 +7,6 @@ import reportWebVitals from './reportWebVitals';
 import ReactPWAInstallProvider from "react-pwa-install";
 
 
-
-
-
 ReactDOM.render(
   // <React.StrictMode>
   //   <App />

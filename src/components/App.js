@@ -1,45 +1,26 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect} from "react"
 import { Container } from "react-bootstrap"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import LoginScreen from "./Login"
 import ProfileScreen from "./screens/Profile.Screen"
 import HomeScreen from "./screens/Home.Screen"
-import * as faceapi from 'face-api.js';
 import { useReactPWAInstall } from "react-pwa-install";
-import icon192 from './icon192.png'
-import hermione from './hermione.jpg';
 import UserProvider from "../UserProvider";
+import icon from './icon192.png'
 
 
 function App() {
   const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [isLoaded2, setIsLoaded2] = useState(false)
-  const [isLoaded3, setIsLoaded3] = useState(false)
-
-  const [isRan, setIsRan] = useState(false)
 
   const handlePopup = () => {
     pwaInstall({
       title: "Install FaceTag to device",
-      logo: icon192,
+      logo: icon,
     })
       .then(() => console.log("App installed successfully or instructions for install shown"))
       .catch(() => console.log("User opted out from installing"));
   };
 
-  async function loadModels () {
-    await faceapi.loadSsdMobilenetv1Model('/models');
-    setIsLoaded(true)
-    await faceapi.loadFaceLandmarkModel('/models');
-    setIsLoaded2(true)
-    await faceapi.loadFaceRecognitionModel('/models');
-    setIsLoaded3(true)
-    const input = document.getElementById('myImg')
-    await faceapi.detectSingleFace(input).withFaceLandmarks().withFaceDescriptor()
-    setIsRan(true)
-    pwaOption()
-  }
   
   function pwaOption(){
     if (supported() && !isInstalled()) { 
@@ -47,9 +28,8 @@ function App() {
     }
 }
 
-
   useEffect(() => {
-    loadModels()
+    pwaOption()    
   },[]);
   
   return (
@@ -59,47 +39,7 @@ function App() {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <div style={{textAlign: 'center'}}>
-      {!isLoaded3?
-      <div>
-      <img src={icon192} alt=""></img>
-      </div>
-      :null}
-      {!isLoaded?
-          <div style={{textAlign: 'center'}}> 
-          <p>Loading face detector model...</p>
-          <p></p>
-          <p></p>
-          </div>: null
-            }
-
-        {(isLoaded && !isLoaded2)? 
-          <div style={{textAlign: 'center'}}>
-            <p>Successfully loaded face detector model.</p>
-          <p>Loading facial landmark detection model...</p>
-          <p></p>
-          </div>: null
-            }
-
-        {(isLoaded && isLoaded2 && !isLoaded3)? 
-          <div style={{textAlign: 'center'}}>
-            <p>Successfully loaded face detector model.</p>
-          <p>Successfully loaded facial landmark detection model.</p>
-          <p>Loading face descriptor model...</p>
-          </div>: null
-            }
-        </div>
-
-        {(isLoaded3 && !isRan)?
-        <div  style={{textAlign: 'center'}}>
-        <p>Warming up facial recognition models with Hermione Granger...</p>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <img id='myImg' src={hermione} width="150" height="150"  alt=""></img>
-        </div>
-        </div>
-        : null
-        }
-      {isRan?
+      
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <Router>
             <Switch>
@@ -108,8 +48,7 @@ function App() {
               <Route path="/profile" component={ProfileScreen} />
             </Switch>
         </Router>
-      </div>: null
-    }
+      </div>
       
     </Container>
     </UserProvider>

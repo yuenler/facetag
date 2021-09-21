@@ -34,6 +34,8 @@ var names = [];
 var phones = [];
 var snaps = [];
 var instas = [];
+var uids = [];
+var privateProfiles = [];
 var predictionIndex = 0;
 
 function HomeScreen() {
@@ -70,6 +72,8 @@ function HomeScreen() {
   const [phone, setPhone] = useState('');
   const [snap, setSnap] = useState('');
   const [insta, setInsta] = useState('');
+  const [privateProfile, setPrivateProfile] = useState(false);
+  const [uid, setUid] = useState('');
   const [distance, setDistance] = useState('');
   const [predictionIndexPrint, setPredictionIndexPrint] = useState(0);
 
@@ -107,6 +111,7 @@ function HomeScreen() {
     phones = [];
     snaps = [];
     instas = [];
+    privateProfiles = [];
     setPredictionOut(false);
     runFaceapi()
     
@@ -124,6 +129,7 @@ function HomeScreen() {
     setPhone(phones[predictionIndex])
     setSnap(snaps[predictionIndex])
     setInsta(instas[predictionIndex])
+    setPrivateProfile(privateProfiles[predictionIndex])
     setPredictionIndexPrint(predictionIndex)
   }
 
@@ -140,9 +146,39 @@ function HomeScreen() {
     setPhone(phones[predictionIndex])
     setSnap(snaps[predictionIndex])
     setInsta(instas[predictionIndex])
+    setPrivateProfile(privateProfiles[predictionIndex])
     setPredictionIndexPrint(predictionIndex)
 
   }
+
+  const handleSendRequest = (currentUid) => {
+    var sendTime = Date.now()
+    firebase.database().ref('Users/' + currentUid).update({
+			lastRequest: sendTime,
+		  },
+		  (error) => {
+				console.log(error);
+		  } 
+		  );
+      checkAcceptance(sendTime, currentUid);
+    }
+
+  
+  const checkAcceptance = (sendTime, currentUid) => {
+    firebase.database().ref('Users/' + currentUid).on("value", snapshot => {
+        var latestAcceptance = snapshot.val().latestAcceptance;
+        if (latestAcceptance != null){
+          var timeDiff = Date.now() - latestAcceptance;
+          if (timeDiff < 1000){
+            if (currentUid === uid){
+              setPrivateProfile(false)
+            }
+          }
+        }
+
+   });
+  }
+  
 
 
   const runFaceapi = async () => {
@@ -189,6 +225,7 @@ function HomeScreen() {
   const compareFaces = () => {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
+      let uid = snapshot.key
       let distance = 1;
       if (user.descriptor != null){
        distance = faceapi.euclideanDistance(user.descriptor, descriptor)
@@ -201,12 +238,16 @@ function HomeScreen() {
         phones.splice(index, 0, user.phone); 
         snaps.splice(index, 0, user.snap); 
         instas.splice(index, 0, user.insta);
+        uids.splice(index, 0, uid);
+        privateProfiles.splice(index, 0, user.private)
         predictionIndex = 0
         setDistance(distances[predictionIndex])
         setName(names[predictionIndex])
         setPhone(phones[predictionIndex])
         setSnap(snaps[predictionIndex])
         setInsta(instas[predictionIndex])
+        setUid(uids[predictionIndex])
+        setPrivateProfile(privateProfiles[predictionIndex])
         setPredictionIndexPrint(predictionIndex)
 
         setPrediction('')
@@ -229,15 +270,16 @@ function HomeScreen() {
       setredirect("/login");
     }
     else if (isOutsider(user.email)){
-      logOut()
+      logOut();
     }
     else{
-      checkProfileExistence()
+      checkProfileExistence();
     }
   }, [user]);
   if (redirect) {
     return <Redirect to={redirect} />;
   }
+  
 
   return (
     <div className="App" style={{textAlign: 'center', margin: 0, padding: 0 /*backgroundColor: "black", color: "white" */}}>
@@ -279,7 +321,6 @@ function HomeScreen() {
           <Webcam
             ref={webcamRef}
             style={{
-              // position: "absolute",
               marginLeft: "auto",
               marginRight: "auto",
               left: 0,
@@ -320,9 +361,23 @@ function HomeScreen() {
         <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px", marginTop: "10px"}}>
           <p>{String(Math.round((1 - distance)*100) + "% match")}</p>
           <p>{"Name: " + name}</p>
+          {!privateProfile?
+          <div>
           <p>Phone number: <a href={phoneRef}>{phone}</a></p>
           <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
           <p>Instagram: <a href={instaRef}>{insta}</a></p>
+          </div>:
+          <div style = {{marginBottom: 10}}>
+          <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => handleSendRequest(uid) }
+        >
+          Request
+        </Button>
+        </div>
+          }
         </div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <IconButton
@@ -349,6 +404,7 @@ function HomeScreen() {
     </div>
 
   );
-}
+    }
+
 
 export default HomeScreen;
