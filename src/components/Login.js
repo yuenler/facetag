@@ -140,7 +140,7 @@ export default function LoginScreen() {
       </div>
 
         </Card.Body>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{display: 'flex', justifyContent: 'center', textAlign: 'center'}}>
         <p style={{color: 'white'}}>Sign in using your Harvard College email account.</p>
         </div>
       </Card>
