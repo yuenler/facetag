@@ -21,7 +21,7 @@ import { logOut } from "../../firebase";
 import { UserContext } from "../../UserProvider";
 import { Redirect } from "react-router-dom";
 
-// document.getElementsByTagName("body")[0].style.backgroundColor = "black";
+document.getElementsByTagName("body")[0].style.backgroundColor = "#0b0017";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -282,7 +282,7 @@ function HomeScreen() {
   
 
   return (
-    <div className="App" style={{textAlign: 'center', margin: 0, padding: 0 /*backgroundColor: "black", color: "white" */}}>
+    <div className="App" style={{textAlign: 'center', margin: 0, padding: 0, color: "white" }}>
       <header className="App-header">
 
       <Button 
@@ -358,7 +358,7 @@ function HomeScreen() {
       </div>
       {predictionOut?
         <div>
-        <div style={{border: "2px solid black", backgroundColor: "#f7cbd1", paddingTop: "10px", marginTop: "10px"}}>
+        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px"}}>
           <p>{String(Math.round((1 - distance)*100) + "% match")}</p>
           <p>{"Name: " + name}</p>
           {!privateProfile?
@@ -382,7 +382,7 @@ function HomeScreen() {
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <IconButton
         onClick={handleLeft}>
-        <ArrowLeft/>
+        <ArrowLeft style={{color: 'white'}}/>
         </IconButton>
 
         <p>{predictionIndexPrint + 1}</p>
@@ -390,7 +390,7 @@ function HomeScreen() {
         <IconButton
         onClick={handleRight}
         >
-        <ArrowRight/>
+        <ArrowRight  style={{color: 'white'}}/>
         </IconButton>
         </div>
         </div>

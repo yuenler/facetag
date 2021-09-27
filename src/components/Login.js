@@ -85,7 +85,7 @@ export default function LoginScreen() {
 
   return (
   
-    <div>
+    <div style={{color: 'white'}}>
       
     <div style={{textAlign: 'center'}}>
       {!isLoaded3?

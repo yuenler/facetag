@@ -63,7 +63,6 @@ function ProfileScreen() {
   
   const [openCamera, setOpenCamera] = useState(false);
   const [prediction, setPrediction] = useState("Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the shutter.")
-  const [doneRunning, setDoneRunning] = useState(false)
   const [startedRunning, setStartedRunning] = useState(true)
   const [descriptor, setDescriptor] = useState(null);
   const [name, setName] = useState(null)
@@ -123,7 +122,6 @@ function ProfileScreen() {
     setPhone(phoneRef.current.value);
     setInsta(instaRef.current.value);
     setSnap(snapRef.current.value);
-    setDoneRunning(false)
     setStartedRunning(false)
     setOpenCamera(true)
   }
@@ -157,7 +155,7 @@ function ProfileScreen() {
       if(detectionWithDescriptors != null){
         setDescriptor(detectionWithDescriptors.descriptor);
         setPrediction('')
-        setDoneRunning(true)
+        setOpenCamera(false);
       }
       else{
         setPrediction('No face detected, please try again.')
@@ -194,15 +192,15 @@ function ProfileScreen() {
 
   
   return (
-    <div className="App">
+    <div className="App" style={{color: 'white'}}>
       <header className="App-header">
       <IconButton aria-label="home" onClick={() => { handleHome() }}>
-        <Home />
+        <Home style={{color: 'white'}}/>
       </IconButton>
 
       { !startedRunning?
         <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>
-        <Clear />
+        <Clear style={{color: 'white'}}/>
       </IconButton>: null
       }
       
@@ -227,7 +225,8 @@ function ProfileScreen() {
           }}
           mirrored={facingMode === FACING_MODE_USER}
         />
-    {!doneRunning?
+
+
        <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
        <IconButton
          variant="contained"
@@ -246,19 +245,9 @@ function ProfileScreen() {
    </div>
    </div>
       
-      :
-      <div>
-            <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            className={classes.button}
-            onClick={() => handleLeaveCamera() }
-          >
-            Finish
-            </Button>
-      </div>
-      }
+
+     
+
         <div style={{marginTop: '20px'}}>
         <p>{prediction}</p>
         </div>
@@ -291,8 +280,8 @@ function ProfileScreen() {
 
             {
               descriptor ?
-              <Check/>:
-              <Error/>
+              <Check style={{color: '#0eeb24'}}/>:
+              <Error style={{color: 'red'}}/>
             }
 
             <div>
