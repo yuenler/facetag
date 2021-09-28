@@ -156,12 +156,11 @@ function ProfileScreen() {
         setDescriptor(detectionWithDescriptors.descriptor);
         setPrediction('')
         setOpenCamera(false);
-        setStartedRunning(false)
       }
       else{
         setPrediction('No face detected, please try again.')
       }
-      setStartedRunning(false)
+      setStartedRunning(true)
      
     }
   };
