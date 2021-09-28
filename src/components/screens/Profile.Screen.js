@@ -256,7 +256,6 @@ function ProfileScreen() {
 
         :
         <div>
-          <p>The following inputs will be public to all Harvard College students when they scan your face. Please leave any field for which you do not want to be publicly available blank.</p>
           <div style={{display: 'flex'}}>
           
           <div style={{marginRight: 10}}><label>Private profile?</label></div>
