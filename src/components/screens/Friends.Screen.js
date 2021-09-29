@@ -4,6 +4,7 @@ import "firebase/database"
 
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
+import RemoveCircle from '@material-ui/icons/RemoveCircle';
 
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -130,16 +131,14 @@ function FriendsScreen() {
           //   <ListItemButton key={index} component="a" onClick={() => setPredictionIndex(index-1)}> 
           //   <ListItemText primary={names[index-1]} />
           // </ListItemButton>
-
+          <div style={{backgroundColor: predictionIndex === index-1? '#780d24': 'black'}}>
             <ListItem key={index} disablePadding>
             <ListItemButton onClick={() => setPredictionIndex(index-1)}>
-              {/* <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon> */}
               <ListItemText primary={names[index-1]} />
             </ListItemButton>
             </ListItem>
-
+            <hr style={{margin: 0, padding: 0}}></hr>
+            </div>
           
           ))}
 

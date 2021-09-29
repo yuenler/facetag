@@ -241,6 +241,7 @@ function HomeScreen() {
       if (distance < 0.5){
         let index = determineInsertionIndex(distances, distance)
         setPredictionOut(true)
+        setPrediction('');
         let isFriend = friends.includes(uid) && (uid !== user.uid);
 
         distances.splice(index,0,distance)
@@ -393,7 +394,7 @@ function HomeScreen() {
       </div>
       
       </div>
-      <div style = {{ position: 'fixed', top: '50%', right: "30%", left: '30%' }}>
+      <div style = {{ position: 'fixed', top: '50%', right: "10%", left: '10%' }}>
           <p>{prediction}</p>
         </div>
       
