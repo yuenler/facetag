@@ -41,6 +41,7 @@ var uids = [];
 var privateProfiles = [];
 var isFriends = [];
 var friends = [];
+var numFriends = [];
 
 function HomeScreen() {
   const user = useContext(UserContext);
@@ -123,6 +124,7 @@ function HomeScreen() {
     uids = [];
     privateProfiles = [];
     isFriends = [];
+    numFriends = [];
   }
 
   const handleRunFaceapi = () => {
@@ -230,6 +232,11 @@ function HomeScreen() {
     return index
   }
 
+  const determineNumFriends = (snapshot) => {
+    console.log(snapshot);
+    return 5
+  }
+
   const compareFaces = () => {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
@@ -243,6 +250,7 @@ function HomeScreen() {
         setPredictionOut(true)
         setPrediction('');
         let isFriend = friends.includes(uid) && (uid !== user.uid);
+        let numFriend = determineNumFriends(snapshot.val().Friends)
 
         distances.splice(index,0,distance)
         names.splice(index, 0, user.name); 
@@ -250,6 +258,7 @@ function HomeScreen() {
         snaps.splice(index, 0, user.snap); 
         instas.splice(index, 0, user.insta);
         uids.splice(index, 0, uid);
+        numFriends.splice(index, 0, numFriend);
         privateProfiles.splice(index, 0, user.private)
         isFriends.splice(index, 0, isFriend)
         
@@ -402,18 +411,24 @@ function HomeScreen() {
       }
 
       {predictionOut?
-        <div>
-        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px"}}>
-        
-        <div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
-        
-          <p>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</p>
-        
-        <div style={{position: "absolute", right: 0, top:-20}}>
-          <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
+      <div>
+        <div style={{display: 'flex', position: 'relative', height: 20}}>
+        <div style={{position: 'absolute', right: 0, top: -10}}>
+        <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
         <Clear style={{color: 'white'}}/>
       </IconButton>
-      </div>
+          </div>
+          </div>
+        <div>
+        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px"}}>
+        
+        <div style={{display: 'flex', position: 'relative'}}>
+                  
+          <p>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</p>
+        
+          <div style={{position: "absolute", right: 0}}>
+            <p>{numFriends[predictionIndex] + " friends"}</p>
+          </div>
         </div>
 
           {!privateProfile?
@@ -457,6 +472,7 @@ function HomeScreen() {
         >
         <ArrowRight  style={{color: 'white'}}/>
         </IconButton>
+        </div>
         </div>
         </div>
         : null
