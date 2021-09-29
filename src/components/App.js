@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import LoginScreen from "./Login"
 import ProfileScreen from "./screens/Profile.Screen"
 import HomeScreen from "./screens/Home.Screen"
+import FriendScreen from "./screens/Friends.Screen"
+
 import { useReactPWAInstall } from "react-pwa-install";
 import UserProvider from "../UserProvider";
 import icon from './icon192.png'
@@ -46,6 +48,7 @@ function App() {
               <Route path="/login" component={LoginScreen} />
               <Route exact path="/" component={HomeScreen} />
               <Route path="/profile" component={ProfileScreen} />
+              <Route path="/friends" component={FriendScreen} />
             </Switch>
         </Router>
       </div>

@@ -11,7 +11,6 @@ import Clear from '@material-ui/icons/Clear';
 import FlipCameraIos from '@material-ui/icons/FlipCameraIos';
 import CameraAlt from '@material-ui/icons/CameraAlt';
 import Error from '@material-ui/icons/Error';
-import Home from '@material-ui/icons/Home';
 import * as faceapi from 'face-api.js';
 import {useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
@@ -194,9 +193,6 @@ function ProfileScreen() {
   return (
     <div className="App" style={{color: 'white'}}>
       <header className="App-header">
-      <IconButton aria-label="home" onClick={() => { handleHome() }}>
-        <Home style={{color: 'white'}}/>
-      </IconButton>
 
       { !startedRunning?
         <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>
@@ -310,6 +306,16 @@ function ProfileScreen() {
             </Form.Group>
 
             </div>
+
+            <Button
+        variant="contained"
+        color="default"
+        size="small"
+        className={classes.button}
+        onClick={() => handleHome() }
+      >
+        Cancel
+      </Button>
             
             <Button
         variant="contained"
@@ -318,7 +324,7 @@ function ProfileScreen() {
         className={classes.button}
         onClick={() => handleSubmit() }
       >
-        Save Profile
+      Save
       </Button>
           </Form>
           

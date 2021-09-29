@@ -9,6 +9,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import ArrowLeft from '@material-ui/icons/ArrowLeft';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import Clear from '@material-ui/icons/Clear';
+import People from '@material-ui/icons/People';
+
 
 import Favorite from '@material-ui/icons/Favorite';
 import { useHistory } from "react-router-dom"
@@ -36,7 +39,6 @@ var snaps = [];
 var instas = [];
 var uids = [];
 var privateProfiles = [];
-var predictionIndex = 0;
 var isFriends = [];
 var friends = [];
 
@@ -50,7 +52,7 @@ function HomeScreen() {
 
   const videoConstraints = {
     facingMode: FACING_MODE_USER,
-    aspectRatio: 1,
+    // aspectRatio: 1,
   };
 
     const [facingMode, setFacingMode] = React.useState(FACING_MODE_ENVIRONMENT);
@@ -66,19 +68,15 @@ function HomeScreen() {
 
   const history = useHistory()
   const classes = useStyles()
-  const [prediction, setPrediction] = useState("Hold the phone so that the face of the person you want to scan takes up the majority of the screen, but no part of their head is cut off. Make sure you have good lighting and that you are not holding the camera at an angle. When you are ready, click the shutter.");
+
+  const [prediction, setPrediction] = useState("");
   const [predictionOut, setPredictionOut] = useState(false);
 
-  const [startedRunning, setStartedRunning] = useState(false)
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [snap, setSnap] = useState('');
-  const [insta, setInsta] = useState('');
-  const [privateProfile, setPrivateProfile] = useState(false);
-  const [uid, setUid] = useState('');
-  const [distance, setDistance] = useState('');
+  const [startedRunning, setStartedRunning] = useState(false);
+  const [predictionIndex, setPredictionIndex] = useState(0);
   const [isFriend, setIsFriend] = useState(false);
-  const [predictionIndexPrint, setPredictionIndexPrint] = useState(0);
+  const [privateProfile, setPrivateProfile] = useState(false);
+
   let descriptor;
   
 
@@ -90,6 +88,10 @@ function HomeScreen() {
 
   function handleProfile() {
     history.push("/profile")
+  }
+
+  function handleFriends() {
+    history.push("/friends")
   }
 
   const checkProfileExistence = () => {
@@ -113,15 +115,6 @@ function HomeScreen() {
 
 
   const resetVariables = () => {
-    setDistance('');
-    setName('');
-    setPhone('');
-    setSnap('');
-    setInsta('');
-    setUid('');
-    setPrivateProfile(false);
-    setIsFriend(false);
-    setPredictionIndexPrint(0);
     distances = [];
     names = [];
     phones = [];
@@ -139,39 +132,31 @@ function HomeScreen() {
     runFaceapi()
   }
 
-  const changePerson = (predictionIndex) => {
-    setDistance(distances[predictionIndex])
-    setUid(uids[predictionIndex])
-    setName(names[predictionIndex])
-    setPhone(phones[predictionIndex])
-    setSnap(snaps[predictionIndex])
-    setInsta(instas[predictionIndex])
-    setPrivateProfile(privateProfiles[predictionIndex])
-    setIsFriend(isFriends[predictionIndex])
-    setPredictionIndexPrint(predictionIndex)
-    setPrediction('');
-  }
-
   const handleLeft = () => {
+    var newIndex = 0;
     if (predictionIndex === 0){
-      predictionIndex = distances.length - 1;
+      newIndex = distances.length - 1;
+
     }
     else{
-      predictionIndex = predictionIndex - 1;
+      newIndex = predictionIndex-1
     }
-    changePerson(predictionIndex)
-    
+    setPredictionIndex(newIndex);
+    setPrivateProfile(privateProfiles[newIndex]);
+    setIsFriend(isFriends[newIndex]);
   }
 
   const handleRight = () => {
-
+    var newIndex = 0;
     if (predictionIndex === distances.length - 1){
-      predictionIndex = 0;
+      newIndex = 0;
     }
     else{
-      predictionIndex = predictionIndex + 1;
+      newIndex = predictionIndex + 1;
     }
-    changePerson(predictionIndex);
+    setPredictionIndex(newIndex);
+    setPrivateProfile(privateProfiles[newIndex]);
+    setIsFriend(isFriends[newIndex]);
   }
 
   const handleSendRequest = (currentUid) => {
@@ -194,8 +179,9 @@ function HomeScreen() {
         if (latestAcceptance != null){
           var timeDiff = Date.now() - latestAcceptance;
           if (timeDiff < 1000){
-            if (currentUid === uid){
-              setPrivateProfile(false)
+            if (currentUid === uids[predictionIndex]){
+              privateProfiles[predictionIndex] = false;
+              setPrivateProfile(false);
             }
           }
         }
@@ -245,7 +231,6 @@ function HomeScreen() {
   }
 
   const compareFaces = () => {
-    console.log(friends)
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let uid = snapshot.key
@@ -267,8 +252,9 @@ function HomeScreen() {
         privateProfiles.splice(index, 0, user.private)
         isFriends.splice(index, 0, isFriend)
         
-        predictionIndex = 0
-        changePerson(predictionIndex);
+        setPrivateProfile(user.private);
+        setIsFriend(isFriend);
+        setPredictionIndex(0);
       }
     })
   }
@@ -289,6 +275,8 @@ function HomeScreen() {
             console.log(error);
           } 
           );  
+          isFriends[predictionIndex] = true;
+          setIsFriend(true);
   }
 
   function isOutsider(email) {
@@ -343,6 +331,17 @@ function HomeScreen() {
 
       <Button
         variant="contained"
+        color="primary"
+        size="small"
+        className={classes.button}
+        startIcon={<People />}
+        onClick={() => handleFriends() }
+      >
+        Friends
+      </Button>
+
+      <Button
+        variant="contained"
         color="secondary"
         size="small"
         startIcon={<Favorite />}
@@ -351,8 +350,8 @@ function HomeScreen() {
         Donate
       </Button>
 
+      {!predictionOut?
       <div>
-         
           <div style={{width: '100%'}}>
           <Webcam
             ref={webcamRef}
@@ -372,6 +371,8 @@ function HomeScreen() {
             mirrored={facingMode === FACING_MODE_USER}
           />
           </div>
+
+
           <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
@@ -385,33 +386,49 @@ function HomeScreen() {
           {!startedRunning?
       <IconButton onClick={handleClick}>
         <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
-        </IconButton>: null
+        </IconButton>
+        
+        : null
       }
       </div>
+      
       </div>
+      <div style = {{ position: 'fixed', top: '50%', right: "30%", left: '30%' }}>
+          <p>{prediction}</p>
+        </div>
+      
+      </div>: null
+      }
 
-
-      </div>
       {predictionOut?
         <div>
         <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px"}}>
-          <p>{String(Math.round((1 - distance)*100) + "% match")}</p>
-          <p>{"Name: " + name}</p>
+        
+        <div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
+        
+          <p>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</p>
+        
+        <div style={{position: "absolute", right: 0, top:-20}}>
+          <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
+        <Clear style={{color: 'white'}}/>
+      </IconButton>
+      </div>
+        </div>
+
           {!privateProfile?
           <div>
-          <p>Phone number: <a href={phoneRef}>{phone}</a></p>
-          <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
-          <p>Instagram: <a href={instaRef}>{insta}</a></p>
+          <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
+          <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>
+          <p>Instagram: <a href={instaRef}>{instas[predictionIndex]}</a></p>
           {!isFriend?
           <Button
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => addFriend(uid) }
+          onClick={() => addFriend(uids[predictionIndex]) }
         >
           Add Friend
-        </Button>:
-        <p>Already Friends!</p>
+        </Button>: null
       }
           </div>:
           <div style = {{marginBottom: 10}}>
@@ -419,7 +436,7 @@ function HomeScreen() {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => handleSendRequest(uid) }
+          onClick={() => handleSendRequest(uids[predictionIndex]) }
         >
           Request
         </Button>
@@ -432,7 +449,7 @@ function HomeScreen() {
         <ArrowLeft style={{color: 'white'}}/>
         </IconButton>
 
-        <p>{predictionIndexPrint + 1}</p>
+        <p>{predictionIndex + 1}</p>
 
         <IconButton
         onClick={handleRight}
@@ -441,11 +458,9 @@ function HomeScreen() {
         </IconButton>
         </div>
         </div>
-        : 
-        <div style = {{marginTop: "20px"}}>
-        <p>{prediction}</p>
-        </div>
+        : null
       }
+
       <br/>
       </header>
     </div>
