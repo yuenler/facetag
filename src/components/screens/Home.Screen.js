@@ -37,6 +37,8 @@ var instas = [];
 var uids = [];
 var privateProfiles = [];
 var predictionIndex = 0;
+var isFriends = [];
+var friends = [];
 
 function HomeScreen() {
   const user = useContext(UserContext);
@@ -75,8 +77,8 @@ function HomeScreen() {
   const [privateProfile, setPrivateProfile] = useState(false);
   const [uid, setUid] = useState('');
   const [distance, setDistance] = useState('');
+  const [isFriend, setIsFriend] = useState(false);
   const [predictionIndexPrint, setPredictionIndexPrint] = useState(0);
-
   let descriptor;
   
 
@@ -96,25 +98,58 @@ function HomeScreen() {
          history.push("/profile")
          alert('Please fill out your profile first!')
       }
+      else{
+        retrieveFriendData();
+      }
    });
   }
 
-  const handleRunFaceapi = () => {
-    setStartedRunning(true)
+  const retrieveFriendData = () => {
+    friends = [];
+    firebase.database().ref('Users/' + user.uid + '/Friends').on('child_added', (snapshot) => {
+      friends.push(snapshot.val().uid)
+    });
+  }
+
+
+  const resetVariables = () => {
+    setDistance('');
     setName('');
     setPhone('');
     setSnap('');
     setInsta('');
-    setDistance('');
+    setUid('');
+    setPrivateProfile(false);
+    setIsFriend(false);
+    setPredictionIndexPrint(0);
     distances = [];
     names = [];
     phones = [];
     snaps = [];
     instas = [];
+    uids = [];
     privateProfiles = [];
+    isFriends = [];
+  }
+
+  const handleRunFaceapi = () => {
+    resetVariables()
+    setStartedRunning(true)
     setPredictionOut(false);
     runFaceapi()
-    
+  }
+
+  const changePerson = (predictionIndex) => {
+    setDistance(distances[predictionIndex])
+    setUid(uids[predictionIndex])
+    setName(names[predictionIndex])
+    setPhone(phones[predictionIndex])
+    setSnap(snaps[predictionIndex])
+    setInsta(instas[predictionIndex])
+    setPrivateProfile(privateProfiles[predictionIndex])
+    setIsFriend(isFriends[predictionIndex])
+    setPredictionIndexPrint(predictionIndex)
+    setPrediction('');
   }
 
   const handleLeft = () => {
@@ -124,13 +159,8 @@ function HomeScreen() {
     else{
       predictionIndex = predictionIndex - 1;
     }
-    setDistance(distances[predictionIndex])
-    setName(names[predictionIndex])
-    setPhone(phones[predictionIndex])
-    setSnap(snaps[predictionIndex])
-    setInsta(instas[predictionIndex])
-    setPrivateProfile(privateProfiles[predictionIndex])
-    setPredictionIndexPrint(predictionIndex)
+    changePerson(predictionIndex)
+    
   }
 
   const handleRight = () => {
@@ -141,14 +171,7 @@ function HomeScreen() {
     else{
       predictionIndex = predictionIndex + 1;
     }
-    setDistance(distances[predictionIndex])
-    setName(names[predictionIndex])
-    setPhone(phones[predictionIndex])
-    setSnap(snaps[predictionIndex])
-    setInsta(instas[predictionIndex])
-    setPrivateProfile(privateProfiles[predictionIndex])
-    setPredictionIndexPrint(predictionIndex)
-
+    changePerson(predictionIndex);
   }
 
   const handleSendRequest = (currentUid) => {
@@ -160,11 +183,12 @@ function HomeScreen() {
 				console.log(error);
 		  } 
 		  );
-      checkAcceptance(sendTime, currentUid);
+      checkAcceptance(currentUid);
+      alert("Profile request sent!")
     }
 
   
-  const checkAcceptance = (sendTime, currentUid) => {
+  const checkAcceptance = (currentUid) => {
     firebase.database().ref('Users/' + currentUid).on("value", snapshot => {
         var latestAcceptance = snapshot.val().latestAcceptance;
         if (latestAcceptance != null){
@@ -178,8 +202,6 @@ function HomeScreen() {
 
    });
   }
-  
-
 
   const runFaceapi = async () => {
       descriptor = null;
@@ -223,6 +245,7 @@ function HomeScreen() {
   }
 
   const compareFaces = () => {
+    console.log(friends)
     firebase.database().ref('Users').on('child_added', (snapshot) => {
       let user = snapshot.val()
       let uid = snapshot.key
@@ -233,6 +256,8 @@ function HomeScreen() {
       if (distance < 0.5){
         let index = determineInsertionIndex(distances, distance)
         setPredictionOut(true)
+        let isFriend = friends.includes(uid) && (uid !== user.uid);
+
         distances.splice(index,0,distance)
         names.splice(index, 0, user.name); 
         phones.splice(index, 0, user.phone); 
@@ -240,19 +265,30 @@ function HomeScreen() {
         instas.splice(index, 0, user.insta);
         uids.splice(index, 0, uid);
         privateProfiles.splice(index, 0, user.private)
+        isFriends.splice(index, 0, isFriend)
+        
         predictionIndex = 0
-        setDistance(distances[predictionIndex])
-        setName(names[predictionIndex])
-        setPhone(phones[predictionIndex])
-        setSnap(snaps[predictionIndex])
-        setInsta(instas[predictionIndex])
-        setUid(uids[predictionIndex])
-        setPrivateProfile(privateProfiles[predictionIndex])
-        setPredictionIndexPrint(predictionIndex)
-
-        setPrediction('')
+        changePerson(predictionIndex);
       }
     })
+  }
+
+  const addFriend = (uid) => {
+        firebase.database().ref('Users/' + user.uid + '/Friends').push({
+          uid: uid
+          },
+          (error) => {
+            console.log(error);
+          } 
+          );     
+          
+        firebase.database().ref('Users/' + uid + '/Friends').push({
+          uid: user.uid
+          },
+          (error) => {
+            console.log(error);
+          } 
+          );  
   }
 
   function isOutsider(email) {
@@ -366,6 +402,17 @@ function HomeScreen() {
           <p>Phone number: <a href={phoneRef}>{phone}</a></p>
           <p>Snapchat:  <a href={snapRef}>{snap}</a></p>
           <p>Instagram: <a href={instaRef}>{insta}</a></p>
+          {!isFriend?
+          <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => addFriend(uid) }
+        >
+          Add Friend
+        </Button>:
+        <p>Already Friends!</p>
+      }
           </div>:
           <div style = {{marginBottom: 10}}>
           <Button
