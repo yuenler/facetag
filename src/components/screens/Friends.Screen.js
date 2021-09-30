@@ -8,7 +8,6 @@ import RemoveCircle from '@material-ui/icons/RemoveCircle';
 
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 
@@ -34,6 +33,7 @@ var instas = [];
 var uids = [];
 var names = [];
 var numFriendsVar = 0;
+var numFriendOfFriends = [];
 
 function FriendsScreen() {
   const user = useContext(UserContext);
@@ -77,6 +77,9 @@ function FriendsScreen() {
     });
   }
 
+  const determineNumFriends = (snapshot) => {
+    return Object.keys(snapshot).length
+  }
     
   const getProfile = (uid) => {
     firebase.database().ref('Users/' + uid).once('value', (snapshot) => {
@@ -85,10 +88,37 @@ function FriendsScreen() {
         phones.push(snapshot.val().phone);
         snaps.push(snapshot.val().snap);
         instas.push(snapshot.val().insta);
+
+        let numFriendOfFriend = determineNumFriends(snapshot.val().Friends)
+        numFriendOfFriends.push(numFriendOfFriend)
+
+
         setPredictionIndex(0);
         numFriendsVar = uids.length
         setNumFriends(uids.length);
     })
+  }
+
+  const removeFriend = (currentUid) => {
+    var confirmation = window.confirm("Are you sure you want to remove this friend? You will need to scan their face again in order to re-add them.")
+    if(confirmation === true){
+      var ref = firebase.database().ref('Users/' + user.uid + '/Friends');
+      ref.orderByChild('uid').equalTo(currentUid)
+          .once('value').then(function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+              ref.child(childSnapshot.key).remove();
+          });
+      });
+
+      var ref2 = firebase.database().ref('Users/' + currentUid + '/Friends');
+      ref2.orderByChild('uid').equalTo(user.uid)
+          .once('value').then(function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+              ref2.child(childSnapshot.key).remove();
+          });
+      });
+      
+    }
   }
   
 
@@ -100,7 +130,6 @@ function FriendsScreen() {
       }
       return false;   
   } 
-
 
   useEffect(() => {
     if (!user || !user.uid) {
@@ -131,8 +160,8 @@ function FriendsScreen() {
           //   <ListItemButton key={index} component="a" onClick={() => setPredictionIndex(index-1)}> 
           //   <ListItemText primary={names[index-1]} />
           // </ListItemButton>
-          <div style={{backgroundColor: predictionIndex === index-1? '#780d24': 'black'}}>
-            <ListItem key={index} disablePadding>
+          <div key={index} style={{backgroundColor: predictionIndex === index-1? '#780d24': 'black'}}>
+            <ListItem  disablePadding>
             <ListItemButton onClick={() => setPredictionIndex(index-1)}>
               <ListItemText primary={names[index-1]} />
             </ListItemButton>
@@ -143,8 +172,22 @@ function FriendsScreen() {
           ))}
 
         <div style={{textAlign: 'center'}}>
-        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px"}}>
-          <p>{"Name: " + names[predictionIndex]}</p>
+        
+        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px", paddingLeft: 20, paddingRight: 20}}>
+        <div style={{display: 'flex', position: 'relative', height: 20}}>
+        <div style={{position: 'absolute', right: -20, top: -20}}>
+        <IconButton aria-label="clear" onClick={() => {removeFriend(uids[predictionIndex])}}>
+        <RemoveCircle style={{color: 'white'}}/>
+      </IconButton>
+          </div>
+          </div>
+        <div style={{display: 'flex', position: 'relative'}}>
+                  <p><b>{names[predictionIndex]}</b></p>
+                  <div style={{position: "absolute", right: 0}}>
+                    <p>{numFriendOfFriends[predictionIndex] + " friends"}</p>
+                  </div>
+                </div>
+        
           <div>
           <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
           <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>

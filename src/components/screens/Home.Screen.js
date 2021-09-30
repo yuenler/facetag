@@ -165,6 +165,7 @@ function HomeScreen() {
     var sendTime = Date.now()
     firebase.database().ref('Users/' + currentUid).update({
 			lastRequest: sendTime,
+      latestAcceptance: null,
 		  },
 		  (error) => {
 				console.log(error);
@@ -178,9 +179,12 @@ function HomeScreen() {
   const checkAcceptance = (currentUid) => {
     firebase.database().ref('Users/' + currentUid).on("value", snapshot => {
         var latestAcceptance = snapshot.val().latestAcceptance;
+        firebase.database().ref('Users/' + currentUid).update({
+          latestAcceptance: null,
+          });
         if (latestAcceptance != null){
           var timeDiff = Date.now() - latestAcceptance;
-          if (timeDiff < 1000){
+          if (timeDiff < 10000){
             if (currentUid === uids[predictionIndex]){
               privateProfiles[predictionIndex] = false;
               setPrivateProfile(false);
@@ -233,8 +237,7 @@ function HomeScreen() {
   }
 
   const determineNumFriends = (snapshot) => {
-    console.log(snapshot);
-    return 5
+    return Object.keys(snapshot).length
   }
 
   const compareFaces = () => {
@@ -319,14 +322,6 @@ function HomeScreen() {
     <div className="App" style={{textAlign: 'center', margin: 0, padding: 0, color: "white" }}>
       <header className="App-header">
 
-      <Button 
-      variant="contained"
-      color="default"
-      size="small"
-      startIcon={<ExitToApp/>}
-      onClick={logOut}>
-        Logout
-      </Button>
 
       <Button
         variant="contained"
@@ -359,6 +354,11 @@ function HomeScreen() {
       >
         Donate
       </Button>
+
+      <IconButton 
+          onClick={logOut}>
+            <ExitToApp style={{color: "white"}}/>
+      </IconButton>
 
       {!predictionOut?
       <div>
@@ -424,7 +424,7 @@ function HomeScreen() {
         
         <div style={{display: 'flex', position: 'relative'}}>
                   
-          <p>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</p>
+          <p><b>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</b></p>
         
           <div style={{position: "absolute", right: 0}}>
             <p>{numFriends[predictionIndex] + " friends"}</p>

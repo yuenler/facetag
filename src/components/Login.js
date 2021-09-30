@@ -74,7 +74,8 @@ export default function LoginScreen() {
 
   const updateAcceptance = () => {
     firebase.database().ref('Users/' + user.uid).update({
-        latestAcceptance: Date.now()
+        latestAcceptance: Date.now(),
+        lastRequest: null
 		  },
 		  (error) => {
 				console.log(error);
