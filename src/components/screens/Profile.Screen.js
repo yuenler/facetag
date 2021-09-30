@@ -36,7 +36,7 @@ function ProfileScreen() {
 
   const videoConstraints = {
     facingMode: FACING_MODE_USER,
-    aspectRatio: 1,
+    // aspectRatio: 1,
   };
 
   const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
@@ -61,7 +61,7 @@ function ProfileScreen() {
   const snapRef = useRef()
   
   const [openCamera, setOpenCamera] = useState(false);
-  const [prediction, setPrediction] = useState("Hold the phone so that your face takes up the majority of the screen, but no parts of your head is cut off. Make sure you have good lighting and that you are not holding the phone at an angle. When you are ready, click the shutter.")
+  const [prediction, setPrediction] = useState("Click the camera button to scan your face.")
   const [startedRunning, setStartedRunning] = useState(true)
   const [descriptor, setDescriptor] = useState(null);
   const [name, setName] = useState(null)
@@ -191,7 +191,7 @@ function ProfileScreen() {
 
   
   return (
-    <div style={{color: 'white'}}>
+    <div style={{color: 'white', height: '100vh', paddingTop: 30}}>
 
       { !startedRunning?
         <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>
@@ -222,7 +222,7 @@ function ProfileScreen() {
         />
 
 
-       <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+       <div style={{top: -10, display: 'flex', justifyContent: 'center', position: 'relative'}}>
        <IconButton
          variant="contained"
          className={classes.button}
@@ -231,7 +231,7 @@ function ProfileScreen() {
          <CameraAlt style={{width: 70, height: 70, color: '#FFFFFF'}} />
        </IconButton>
 
-       <div style={{position: 'absolute', right: 0, top: 30}}>
+       <div style={{position: 'absolute', right: 0, top: 20}}>
        {!startedRunning?
    <IconButton onClick={handleClick}>
      <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
@@ -241,9 +241,7 @@ function ProfileScreen() {
    </div>
       
 
-     
-
-        <div style={{marginTop: '20px'}}>
+        <div style={{textAlign: 'center'}}>
         <p>{prediction}</p>
         </div>
         

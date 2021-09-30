@@ -319,9 +319,21 @@ function HomeScreen() {
   
 
   return (
-    <div style={{textAlign: 'center', margin: 0, padding: 0, color: "white" }}>
+    <div style={{textAlign: 'center', height: '100vh', margin: 0, padding: 10, color: "white" }}>
+       <div style = {{position: 'absolute', bottom: 10}}>
+      <Button
+        variant="contained"
+        color="secondary"
+        size="small"
+        startIcon={<Favorite />}
+        onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
+      >
+        Donate
+      </Button>
+      </div>
 
-      <div style={{display: 'flex', position: 'absolute', top: 10,}}>
+
+      <div style={{display: 'flex', position: 'relative'}}>
       <div>
       <Button
         variant="contained"
@@ -346,7 +358,7 @@ function HomeScreen() {
       </Button>
       </div>
 
-      <div>
+      <div style={{position: 'absolute', right: 0}}>
       <IconButton 
           onClick={logOut}>
             <ExitToApp style={{color: "white"}}/>
@@ -361,8 +373,8 @@ function HomeScreen() {
           <Webcam
             ref={webcamRef}
             style={{
-              marginLeft: "auto",
-              marginRight: "auto",
+              marginLeft: 0,
+              marginRight: 0,
               left: 0,
               right: 0,
               textAlign: "center",
@@ -378,7 +390,7 @@ function HomeScreen() {
           </div>
 
 
-          <div style={{marginTop: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+          <div style={{ top: -10, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
             className={classes.button}
@@ -387,7 +399,7 @@ function HomeScreen() {
             <CameraAlt style={{width: 70, height: 70, color: '#FFFFFF'}} />
           </IconButton>
 
-          <div style={{position: 'absolute', right: 0, top: 30}}>
+          <div style={{position: 'absolute', right: 0, top: 20}}>
           {!startedRunning?
       <IconButton onClick={handleClick}>
         <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
@@ -395,6 +407,7 @@ function HomeScreen() {
         
         : null
       }
+     
       </div>
       
       </div>
@@ -473,16 +486,6 @@ function HomeScreen() {
         : null
       }
 
-      <br/>
-      <Button
-        variant="contained"
-        color="secondary"
-        size="small"
-        startIcon={<Favorite />}
-        onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
-      >
-        Donate
-      </Button>
     </div>
 
   );

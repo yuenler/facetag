@@ -71,9 +71,7 @@ function FriendsScreen() {
     setNumFriends(numFriendsVar);
     firebase.database().ref('Users/' + user.uid + '/Friends').on('child_added', (snapshot) => {
       var uid = snapshot.val().uid  
-      if (!uids.includes(uid)){
           getProfile(uid)
-        }
     });
   }
 
@@ -83,6 +81,7 @@ function FriendsScreen() {
     
   const getProfile = (uid) => {
     firebase.database().ref('Users/' + uid).once('value', (snapshot) => {
+      if (!uids.includes(uid)){
         uids.push(uid);
         names.push(snapshot.val().name);
         phones.push(snapshot.val().phone);
@@ -96,6 +95,7 @@ function FriendsScreen() {
         setPredictionIndex(0);
         numFriendsVar = uids.length
         setNumFriends(uids.length);
+      }
     })
   }
 
@@ -148,16 +148,13 @@ function FriendsScreen() {
   
 
   return (
-    <div className="App" style={{margin: 0, padding: 0, color: "white" }}>
-      <header className="App-header">
-
-      <div style={{display: 'flex', position: 'absolute', top: 10,}}>
+    <div style={{margin: 0, height: '100vh',  paddingTop: 10, color: "white" }}>
+      
       <IconButton onClick={() => { handleHome() }}>
         <ArrowBack style={{color: 'white'}}/>
       </IconButton>
-      </div>
-
       <p>Number of friends: {numFriends}</p>
+      <div style={{height: '50vh',overflowY: 'scroll'}}>
       {Array(numFriends).fill(1).map((x, y) => x + y).map(index => (
           //   <ListItemButton key={index} component="a" onClick={() => setPredictionIndex(index-1)}> 
           //   <ListItemText primary={names[index-1]} />
@@ -172,8 +169,8 @@ function FriendsScreen() {
             </div>
           
           ))}
-
-        <div style={{textAlign: 'center'}}>
+        </div>
+        <div style={{ bottom: 0, textAlign: 'center'}}>
         
         <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px", paddingLeft: 20, paddingRight: 20}}>
         <div style={{display: 'flex', position: 'relative', height: 20}}>
@@ -202,7 +199,6 @@ function FriendsScreen() {
         </div>
 
       <br/>
-      </header>
     </div>
 
   );
