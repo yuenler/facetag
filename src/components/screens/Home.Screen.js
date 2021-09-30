@@ -237,7 +237,10 @@ function HomeScreen() {
   }
 
   const determineNumFriends = (snapshot) => {
+    if (snapshot != null){
     return Object.keys(snapshot).length
+    }
+    return 0
   }
 
   const compareFaces = () => {
@@ -248,11 +251,11 @@ function HomeScreen() {
       if (user.descriptor != null){
        distance = faceapi.euclideanDistance(user.descriptor, descriptor)
       }
-      if (distance < 0.5){
+      if (distance < 0.9){
         let index = determineInsertionIndex(distances, distance)
         setPredictionOut(true)
         setPrediction('');
-        let isFriend = friends.includes(uid) && (uid !== user.uid);
+        let isFriend = friends.includes(uid) || (uid === user.uid);
         let numFriend = determineNumFriends(snapshot.val().Friends)
 
         distances.splice(index,0,distance)

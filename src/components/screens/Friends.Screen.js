@@ -61,22 +61,28 @@ function FriendsScreen() {
          history.push("/profile")
          alert('Please fill out your profile first!')
       }
-      else{
-        retrieveFriendData();
-      }
    });
   }
 
   const retrieveFriendData = () => {
+    if (user && user.uid) { 
     setNumFriends(numFriendsVar);
     firebase.database().ref('Users/' + user.uid + '/Friends').on('child_added', (snapshot) => {
-      var uid = snapshot.val().uid  
+      if (snapshot.exists()){
+          var uid = snapshot.val().uid  
           getProfile(uid)
+      }
     });
+  }
   }
 
   const determineNumFriends = (snapshot) => {
+    if (snapshot != null){
     return Object.keys(snapshot).length
+    }
+    else{
+      return 0
+    }
   }
     
   const getProfile = (uid) => {
@@ -96,10 +102,27 @@ function FriendsScreen() {
         numFriendsVar = uids.length
         setNumFriends(uids.length);
       }
+
     })
   }
 
+  const removeFriendFromLists = (currentUid) => {
+    const index = uids.indexOf(currentUid);
+    if (index > -1) {
+      numFriendsVar = uids.length-1
+      setNumFriends(uids.length-1);
+      uids.splice(index, 1);
+      phones.splice(index, 1);
+      snaps.splice(index, 1);
+      instas.splice(index, 1);
+      names.splice(index, 1);
+      numFriendOfFriends.splice(index, 1);
+      setPredictionIndex(0);
+    }
+  }
+
   const removeFriend = (currentUid) => {
+    removeFriendFromLists(currentUid);
     var confirmation = window.confirm("Are you sure you want to remove this friend? You will need to scan their face again in order to re-add them.")
     if(confirmation === true){
       var ref = firebase.database().ref('Users/' + user.uid + '/Friends');
@@ -107,7 +130,8 @@ function FriendsScreen() {
           .once('value').then(function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
               ref.child(childSnapshot.key).remove();
-          });
+          }
+          );
       });
 
       var ref2 = firebase.database().ref('Users/' + currentUid + '/Friends');
@@ -117,7 +141,6 @@ function FriendsScreen() {
               ref2.child(childSnapshot.key).remove();
           });
       });
-      
     }
   }
   
@@ -130,6 +153,10 @@ function FriendsScreen() {
       }
       return false;   
   } 
+
+  useEffect(() => {
+    retrieveFriendData();
+  })
 
   useEffect(() => {
     if (!user || !user.uid) {
