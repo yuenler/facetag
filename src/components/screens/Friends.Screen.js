@@ -151,9 +151,11 @@ function FriendsScreen() {
     <div className="App" style={{margin: 0, padding: 0, color: "white" }}>
       <header className="App-header">
 
+      <div style={{display: 'flex', position: 'absolute', top: 10,}}>
       <IconButton onClick={() => { handleHome() }}>
         <ArrowBack style={{color: 'white'}}/>
       </IconButton>
+      </div>
 
       <p>Number of friends: {numFriends}</p>
       {Array(numFriends).fill(1).map((x, y) => x + y).map(index => (

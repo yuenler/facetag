@@ -191,8 +191,7 @@ function ProfileScreen() {
 
   
   return (
-    <div className="App" style={{color: 'white'}}>
-      <header className="App-header">
+    <div style={{color: 'white'}}>
 
       { !startedRunning?
         <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>
@@ -330,7 +329,6 @@ function ProfileScreen() {
           
         </div>
       }
-      </header>
     </div>
 
   );

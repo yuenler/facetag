@@ -319,10 +319,10 @@ function HomeScreen() {
   
 
   return (
-    <div className="App" style={{textAlign: 'center', margin: 0, padding: 0, color: "white" }}>
-      <header className="App-header">
+    <div style={{textAlign: 'center', margin: 0, padding: 0, color: "white" }}>
 
-
+      <div style={{display: 'flex', position: 'absolute', top: 10,}}>
+      <div>
       <Button
         variant="contained"
         color="primary"
@@ -344,21 +344,16 @@ function HomeScreen() {
       >
         Friends
       </Button>
+      </div>
 
-      <Button
-        variant="contained"
-        color="secondary"
-        size="small"
-        startIcon={<Favorite />}
-        onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
-      >
-        Donate
-      </Button>
-
+      <div>
       <IconButton 
           onClick={logOut}>
             <ExitToApp style={{color: "white"}}/>
       </IconButton>
+      </div>
+      </div>
+
 
       {!predictionOut?
       <div>
@@ -403,7 +398,7 @@ function HomeScreen() {
       </div>
       
       </div>
-      <div style = {{ position: 'fixed', top: '50%', right: "10%", left: '10%' }}>
+      <div style = {{ backgroundColor: (prediction !== "")?'#780d24':null ,position: 'fixed', top: '50%', right: "10%", left: '10%' }}>
           <p>{prediction}</p>
         </div>
       
@@ -479,7 +474,15 @@ function HomeScreen() {
       }
 
       <br/>
-      </header>
+      <Button
+        variant="contained"
+        color="secondary"
+        size="small"
+        startIcon={<Favorite />}
+        onClick={() => window.open("https://venmo.com/code?user_id=3203314787287040028&created=1631377064", "_blank") }
+      >
+        Donate
+      </Button>
     </div>
 
   );
