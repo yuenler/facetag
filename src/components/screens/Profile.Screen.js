@@ -191,7 +191,7 @@ function ProfileScreen() {
 
   
   return (
-    <div style={{color: 'white', height: '100vh', paddingTop: 30}}>
+    <div style={{color: 'white', height: '100vh', padding: 10, paddingTop: 30}}>
 
       { !startedRunning?
         <IconButton aria-label="clear" onClick={() => { handleLeaveCamera() }}>

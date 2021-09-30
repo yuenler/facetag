@@ -319,8 +319,8 @@ function HomeScreen() {
   
 
   return (
-    <div style={{textAlign: 'center', height: '100vh', margin: 0, padding: 10, color: "white" }}>
-       <div style = {{position: 'absolute', bottom: 10}}>
+    <div style={{textAlign: 'center', height: '100vh', margin: 0, color: "white" }}>
+       <div style = {{position: 'absolute', padding: 10, bottom: 10}}>
       <Button
         variant="contained"
         color="secondary"
@@ -333,7 +333,7 @@ function HomeScreen() {
       </div>
 
 
-      <div style={{display: 'flex', position: 'relative'}}>
+      <div style={{display: 'flex', position: 'relative', padding: 10,}}>
       <div>
       <Button
         variant="contained"
@@ -410,8 +410,14 @@ function HomeScreen() {
       </div>
       
       </div>
+
+      <div style={{top:-20, position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
+        <p>Click the camera button to scan someone's face.</p>
+        </div>
+
+
       {prediction!== ""?
-      <div style = {{ backgroundColor: 'white', color: 'black',position: 'fixed', top: '50%', right: "10%", left: '10%',  paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px",  borderRadius: '20px', border: '7px solid #780d24'}}>
+      <div style = {{ backgroundColor: 'white', color: 'black',position: 'fixed', top: '30%', right: "5%", left: '5%',  paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px",  borderRadius: '20px', border: '7px solid #780d24'}}>
           <div style={{display: 'flex', position: 'relative', height: 30,}}>
         <div style={{position: 'absolute', right: -10, top: -20}}>
         <IconButton aria-label="clear" onClick={() => { setPrediction("") }}>
@@ -427,11 +433,14 @@ function HomeScreen() {
       
 
       {predictionOut?
-      <div style={{ position: 'fixed', top: '50%', right: "10%", left: '10%',}}>
+      <div style={{ position: 'fixed', top: '30%', right: "5%", left: '5%',}}>
         <div>
         <div style={{border: "2px solid black", backgroundColor: "white", color: "black", paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px",  borderRadius: '20px', border: '7px solid #780d24'}}>
         
         <div style={{display: 'flex', position: 'relative', height: 30,}}>
+        <div >
+          <p>{String(Math.round((1 - distances[predictionIndex])*100)) + "% match"}</p>
+        </div>
         <div style={{position: 'absolute', right: -10, top: -20}}>
         <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
         <Clear style={{color: 'red'}}/>
@@ -441,7 +450,7 @@ function HomeScreen() {
 
         <div style={{display: 'flex', position: 'relative'}}>
                   
-          <p><b>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</b></p>
+          <p><b>{names[predictionIndex]}</b></p>
         
           <div style={{position: "absolute", right: 0}}>
             <p>{numFriends[predictionIndex] + " friends"}</p>

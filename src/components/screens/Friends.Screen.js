@@ -148,7 +148,7 @@ function FriendsScreen() {
   
 
   return (
-    <div style={{margin: 0, height: '100vh',  paddingTop: 10, color: "white" }}>
+    <div style={{margin: 0, height: '100vh',  padding: 10, color: "white" }}>
       
       <IconButton onClick={() => { handleHome() }}>
         <ArrowBack style={{color: 'white'}}/>
@@ -156,9 +156,7 @@ function FriendsScreen() {
       <p>Number of friends: {numFriends}</p>
       <div style={{height: '50vh',overflowY: 'scroll'}}>
       {Array(numFriends).fill(1).map((x, y) => x + y).map(index => (
-          //   <ListItemButton key={index} component="a" onClick={() => setPredictionIndex(index-1)}> 
-          //   <ListItemText primary={names[index-1]} />
-          // </ListItemButton>
+
           <div key={index} style={{backgroundColor: predictionIndex === index-1? '#780d24': 'black'}}>
             <ListItem  disablePadding>
             <ListItemButton onClick={() => setPredictionIndex(index-1)}>
