@@ -367,7 +367,6 @@ function HomeScreen() {
       </div>
 
 
-      {!predictionOut?
       <div>
           <div style={{width: '100%'}}>
           <Webcam
@@ -411,25 +410,35 @@ function HomeScreen() {
       </div>
       
       </div>
-      <div style = {{ backgroundColor: (prediction !== "")?'#780d24':null ,position: 'fixed', top: '50%', right: "10%", left: '10%' }}>
-          <p>{prediction}</p>
-        </div>
-      
-      </div>: null
-      }
-
-      {predictionOut?
-      <div>
-        <div style={{display: 'flex', position: 'relative', height: 20}}>
-        <div style={{position: 'absolute', right: 0, top: -10}}>
-        <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
-        <Clear style={{color: 'white'}}/>
+      {prediction!== ""?
+      <div style = {{ backgroundColor: 'white', color: 'black',position: 'fixed', top: '50%', right: "10%", left: '10%',  paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px",  borderRadius: '20px', border: '7px solid #780d24'}}>
+          <div style={{display: 'flex', position: 'relative', height: 30,}}>
+        <div style={{position: 'absolute', right: -10, top: -20}}>
+        <IconButton aria-label="clear" onClick={() => { setPrediction("") }}>
+        <Clear style={{color: 'red'}}/>
       </IconButton>
           </div>
           </div>
+          <p>{prediction}</p>
+        </div>:null
+      }
+      
+      </div>
+      
+
+      {predictionOut?
+      <div style={{ position: 'fixed', top: '50%', right: "10%", left: '10%',}}>
         <div>
-        <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px"}}>
+        <div style={{border: "2px solid black", backgroundColor: "white", color: "black", paddingLeft: 20, paddingRight: 20, paddingTop: "10px", marginTop: "10px",  borderRadius: '20px', border: '7px solid #780d24'}}>
         
+        <div style={{display: 'flex', position: 'relative', height: 30,}}>
+        <div style={{position: 'absolute', right: -10, top: -20}}>
+        <IconButton aria-label="clear" onClick={() => { setPredictionOut(false) }}>
+        <Clear style={{color: 'red'}}/>
+      </IconButton>
+          </div>
+          </div>
+
         <div style={{display: 'flex', position: 'relative'}}>
                   
           <p><b>{names[predictionIndex] + " (" +String(Math.round((1 - distances[predictionIndex])*100)) + "% match)"}</b></p>
@@ -466,11 +475,10 @@ function HomeScreen() {
         </Button>
         </div>
           }
-        </div>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <IconButton
         onClick={handleLeft}>
-        <ArrowLeft style={{color: 'white'}}/>
+        <ArrowLeft style={{color: 'black'}}/>
         </IconButton>
 
         <p>{predictionIndex + 1}</p>
@@ -478,9 +486,11 @@ function HomeScreen() {
         <IconButton
         onClick={handleRight}
         >
-        <ArrowRight  style={{color: 'white'}}/>
+        <ArrowRight  style={{color: 'black'}}/>
         </IconButton>
         </div>
+        </div>
+        
         </div>
         </div>
         : null
