@@ -195,6 +195,8 @@ function FriendsScreen() {
           
           ))}
         </div>
+        
+        {numFriends !== 0?
         <div style={{ bottom: 0, textAlign: 'center'}}>
         
         <div style={{border: "2px solid black", backgroundColor: "#780d24", paddingTop: "10px", marginTop: "10px", paddingLeft: 20, paddingRight: 20}}>
@@ -221,7 +223,8 @@ function FriendsScreen() {
           
           
         </div>
-        </div>
+        </div>: null
+        }
 
       <br/>
     </div>

@@ -101,17 +101,16 @@ function HomeScreen() {
          history.push("/profile")
          alert('Please fill out your profile first!')
       }
-      else{
-        retrieveFriendData();
-      }
    });
   }
-
   const retrieveFriendData = () => {
-    friends = [];
+    if (user && user.uid) { 
     firebase.database().ref('Users/' + user.uid + '/Friends').on('child_added', (snapshot) => {
-      friends.push(snapshot.val().uid)
+      if (snapshot.exists()){
+        friends.push(snapshot.val().uid)
+      }
     });
+  }
   }
 
 
@@ -184,7 +183,7 @@ function HomeScreen() {
           });
         if (latestAcceptance != null){
           var timeDiff = Date.now() - latestAcceptance;
-          if (timeDiff < 10000){
+          if (timeDiff < 100000){
             if (currentUid === uids[predictionIndex]){
               privateProfiles[predictionIndex] = false;
               setPrivateProfile(false);
@@ -245,13 +244,13 @@ function HomeScreen() {
 
   const compareFaces = () => {
     firebase.database().ref('Users').on('child_added', (snapshot) => {
-      let user = snapshot.val()
+      let otherUser = snapshot.val()
       let uid = snapshot.key
       let distance = 1;
-      if (user.descriptor != null){
-       distance = faceapi.euclideanDistance(user.descriptor, descriptor)
+      if (otherUser.descriptor != null){
+       distance = faceapi.euclideanDistance(otherUser.descriptor, descriptor)
       }
-      if (distance < 0.9){
+      if (distance < 0.5){
         let index = determineInsertionIndex(distances, distance)
         setPredictionOut(true)
         setPrediction('');
@@ -259,16 +258,16 @@ function HomeScreen() {
         let numFriend = determineNumFriends(snapshot.val().Friends)
 
         distances.splice(index,0,distance)
-        names.splice(index, 0, user.name); 
-        phones.splice(index, 0, user.phone); 
-        snaps.splice(index, 0, user.snap); 
-        instas.splice(index, 0, user.insta);
+        names.splice(index, 0, otherUser.name); 
+        phones.splice(index, 0, otherUser.phone); 
+        snaps.splice(index, 0, otherUser.snap); 
+        instas.splice(index, 0, otherUser.insta);
         uids.splice(index, 0, uid);
         numFriends.splice(index, 0, numFriend);
-        privateProfiles.splice(index, 0, user.private)
+        privateProfiles.splice(index, 0, otherUser.private)
         isFriends.splice(index, 0, isFriend)
         
-        setPrivateProfile(user.private);
+        setPrivateProfile(otherUser.private);
         setIsFriend(isFriend);
         setPredictionIndex(0);
       }
@@ -304,6 +303,10 @@ function HomeScreen() {
       return false;   
   } 
 
+
+  useEffect(() => {
+    retrieveFriendData();
+  })
 
   useEffect(() => {
     if (!user || !user.uid) {

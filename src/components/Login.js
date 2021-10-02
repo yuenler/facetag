@@ -60,7 +60,7 @@ export default function LoginScreen() {
          var lastRequest = snapshot.val()
          if (lastRequest != null){
            var timeDiff = Date.now() - lastRequest
-            if (timeDiff < 20000){
+            if (timeDiff < 100000){
               var acceptance = window.confirm("A profile request was sent " + Math.round(timeDiff/1000) + " seconds ago. Do you want to accept?")
               if(acceptance === true){
                 updateAcceptance();
