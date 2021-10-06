@@ -89,14 +89,14 @@ export default function LoginScreen() {
     <div style={{color: 'white'}}>
       
     <div style={{textAlign: 'center'}}>
-      {!isLoaded3?
+      
       <div>
       <img src={icon} alt=""></img>
       </div>
-      :null}
+   
       {(loading && !isLoaded)?
           <div style={{textAlign: 'center'}}> 
-          <p>Loading face detector model...</p>
+          <p>Did you know? FaceTag is probably the best app that has ever been made.</p>
           <p></p>
           <p></p>
           </div>: null
@@ -104,33 +104,33 @@ export default function LoginScreen() {
 
         {(isLoaded && !isLoaded2)? 
           <div style={{textAlign: 'center'}}>
-            <p>Successfully loaded face detector model.</p>
-          <p>Loading facial landmark detection model...</p>
+            <p>🤩</p>
           <p></p>
           </div>: null
             }
 
         {(isLoaded && isLoaded2 && !isLoaded3)? 
           <div style={{textAlign: 'center'}}>
-            <p>Successfully loaded face detector model.</p>
-          <p>Successfully loaded facial landmark detection model.</p>
-          <p>Loading face descriptor model...</p>
+            <p>Pro Tip: FaceTag takes a while to load, so make sure you pre-load the app before FaceTagging someone to avoid the awkward silence!</p>
           </div>: null
             }
         </div>
 
         {(isLoaded3 && !isRan)?
         <div  style={{textAlign: 'center'}}>
-        <p>Warming up facial recognition models with Hermione Granger...</p>
+        <p>How do you ask to FaceTag someone? There are many ways, but here are our favorites:</p>
+        <p>"It was really nice meeting you! Are you cool if I FaceTag you?"</p>
+        <p>"It was an absolute pleasure to have spoken with you. For the purposes of future correspondence, I would like to use the novel FaceTag method to receive your contact information."</p>
+        <p>"Ayy girl you looking fine, lemme FaceTag you!"</p>
         <div style={{display: 'flex', justifyContent: 'center'}}>
-        <img id='myImg' src={hermione} width="150" height="150"  alt=""></img>
+        <img id='myImg' src={hermione} width="0" height="0"  alt=""></img>
         </div>
         </div>
         : null
         }
       
       {loading?
-      <div style={{textAlign: 'center', position: 'absolute', bottom: 10}}>
+      <div style={{textAlign: 'center', position: 'absolute', bottom: 10, padding: 10}}>
       <p>FaceTag was developed by Yuen Ler Chow '25.</p>
       </div>
       : null}
