@@ -392,10 +392,13 @@ function HomeScreen() {
             }}
             mirrored={facingMode === FACING_MODE_USER}
           />
+          <div style={{top: 10, position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
+        <p>Click the camera button to scan someone's face.</p>
+        </div>
           </div>
 
 
-          <div style={{ top: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+          <div style={{ top: -130, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
             className={classes.button}
@@ -417,10 +420,6 @@ function HomeScreen() {
      
       
       </div>
-
-      <div style={{top:-20, position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
-        <p>Click the camera button to scan someone's face.</p>
-        </div>
 
       
 

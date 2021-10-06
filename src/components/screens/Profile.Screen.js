@@ -153,13 +153,13 @@ function ProfileScreen() {
       const detectionWithDescriptors = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor()
       if(detectionWithDescriptors != null){
         setDescriptor(detectionWithDescriptors.descriptor);
-        setPrediction('')
+        setPrediction('Click the camera button to scan your face.')
         setOpenCamera(false);
       }
       else{
         setPrediction('No face detected, please try again.')
       }
-      setStartedRunning(true)
+      setStartedRunning(false)
      
     }
   };
@@ -220,9 +220,12 @@ function ProfileScreen() {
           }}
           mirrored={facingMode === FACING_MODE_USER}
         />
+        <div style={{textAlign: 'center'}}>
+        <p>{prediction}</p>
+        </div>
 
 
-       <div style={{top: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+       <div style={{top: -130, display: 'flex', justifyContent: 'center', position: 'relative'}}>
        <IconButton
          variant="contained"
          className={classes.button}
@@ -241,9 +244,7 @@ function ProfileScreen() {
    </div>
       
 
-        <div style={{textAlign: 'center'}}>
-        <p>{prediction}</p>
-        </div>
+        
         
       </div>
 
