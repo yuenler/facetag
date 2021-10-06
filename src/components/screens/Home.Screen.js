@@ -377,7 +377,6 @@ function HomeScreen() {
 
 
       <div>
-          <div style={{width: '100%'}}>
           <Webcam
             ref={webcamRef}
             style={{
@@ -395,11 +394,9 @@ function HomeScreen() {
             }}
             mirrored={facingMode === FACING_MODE_USER}
           />
-          <div style={{position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
+          <div style={{textAlign: 'center'}}>
         <p>Click the camera button to scan someone's face.</p>
         </div>
-          </div>
-
 
           <div style={{ top: -130, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton

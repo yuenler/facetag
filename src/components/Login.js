@@ -128,6 +128,12 @@ export default function LoginScreen() {
         </div>
         : null
         }
+      
+      {loading?
+      <div style={{textAlign: 'center', position: 'absolute', bottom: 10}}>
+      <p>FaceTag was developed by Yuen Ler Chow '25.</p>
+      </div>
+      : null}
 
     {!loading?
     <div>
