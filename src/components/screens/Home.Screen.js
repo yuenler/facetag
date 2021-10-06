@@ -326,7 +326,8 @@ function HomeScreen() {
 
   return (
     <div style={{textAlign: 'center', height: '100vh', margin: 0, color: "white" }}>
-       <div style = {{position: 'absolute', padding: 10, bottom: 10}}>
+       <div style = {{position: 'absolute', display: 'flex', padding: 10, bottom: 10}}>
+      <div style = {{paddingRight: 20}}>
       <Button
         variant="contained"
         color="secondary"
@@ -336,6 +337,8 @@ function HomeScreen() {
       >
         Donate
       </Button>
+      </div>
+      <p>Made by Yuen Ler Chow '25</p>
       </div>
 
 
@@ -392,7 +395,7 @@ function HomeScreen() {
             }}
             mirrored={facingMode === FACING_MODE_USER}
           />
-          <div style={{top: 10, position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
+          <div style={{position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
         <p>Click the camera button to scan someone's face.</p>
         </div>
           </div>
