@@ -395,7 +395,7 @@ function HomeScreen() {
           </div>
 
 
-          <div style={{ top: -10, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+          <div style={{ top: -100, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
             className={classes.button}
@@ -404,7 +404,7 @@ function HomeScreen() {
             <CameraAlt style={{width: 70, height: 70, color: '#FFFFFF'}} />
           </IconButton>
 
-          <div style={{position: 'absolute', right: 0, top: 20}}>
+          <div style={{position: 'absolute', right: 0, top: 30}}>
           {!startedRunning?
       <IconButton onClick={handleClick}>
         <FlipCameraIos style={{width: 30, height: 30, color: '#FFFFFF'}}/>
@@ -414,12 +414,15 @@ function HomeScreen() {
       }
      
       </div>
+     
       
       </div>
 
       <div style={{top:-20, position: 'relative', paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>
         <p>Click the camera button to scan someone's face.</p>
         </div>
+
+      
 
 
       {prediction!== ""?
