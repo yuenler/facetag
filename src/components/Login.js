@@ -119,9 +119,11 @@ export default function LoginScreen() {
         {(isLoaded3 && !isRan)?
         <div  style={{textAlign: 'center'}}>
         <p>How do you ask to FaceTag someone? There are many ways, but here are our favorites:</p>
+        <div style={{textAlign: 'left', fontSize: '12px'}}>
         <p>"It was really nice meeting you! Are you cool if I FaceTag you?"</p>
         <p>"It was an absolute pleasure to have spoken with you. For the purposes of future correspondence, I would like to use the novel FaceTag method to receive your contact information."</p>
         <p>"Ayy girl you looking fine, lemme FaceTag you!"</p>
+        </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
         <img id='myImg' src={hermione} width="0" height="0"  alt=""></img>
         </div>

@@ -255,6 +255,7 @@ function HomeScreen() {
         setPredictionOut(true)
         setPrediction('');
         let isFriend = friends.includes(uid) || (uid === user.uid);
+
         let numFriend = determineNumFriends(snapshot.val().Friends)
 
         distances.splice(index,0,distance)
@@ -267,9 +268,9 @@ function HomeScreen() {
         privateProfiles.splice(index, 0, otherUser.private)
         isFriends.splice(index, 0, isFriend)
         
-        setPrivateProfile(otherUser.private);
-        setIsFriend(isFriend);
         setPredictionIndex(0);
+        setPrivateProfile(privateProfiles[0]);
+        setIsFriend(isFriends[0]);
       }
     })
   }
@@ -470,7 +471,9 @@ function HomeScreen() {
           <p>Phone number: <a href={phoneRef}>{phones[predictionIndex]}</a></p>
           <p>Snapchat:  <a href={snapRef}>{snaps[predictionIndex]}</a></p>
           <p>Instagram: <a href={instaRef}>{instas[predictionIndex]}</a></p>
-          {!isFriend?
+          {isFriend?
+          <p style={{color: 'red'}}>Already added as a friend!</p>
+          :
           <Button
           variant="contained"
           color="primary"
@@ -478,7 +481,7 @@ function HomeScreen() {
           onClick={() => addFriend(uids[predictionIndex]) }
         >
           Add Friend
-        </Button>: null
+        </Button>
       }
           </div>:
           <div style = {{marginBottom: 10}}>
