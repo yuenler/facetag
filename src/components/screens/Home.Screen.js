@@ -381,8 +381,8 @@ function HomeScreen() {
           <Webcam
             ref={webcamRef}
             style={{
-              marginLeft: 0,
-              marginRight: 0,
+              marginLeft: "auto",
+              marginRight: "auto",
               left: 0,
               right: 0,
               textAlign: "center",
@@ -399,7 +399,7 @@ function HomeScreen() {
         <p>Click the camera button to scan someone's face.</p>
         </div>
 
-          <div style={{ top: -130, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+          <div style={{ top: -150, display: 'flex', justifyContent: 'center', position: 'relative'}}>
           <IconButton
             variant="contained"
             className={classes.button}

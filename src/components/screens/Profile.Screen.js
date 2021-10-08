@@ -225,7 +225,7 @@ function ProfileScreen() {
         </div>
 
 
-       <div style={{top: -130, display: 'flex', justifyContent: 'center', position: 'relative'}}>
+       <div style={{top: -150, display: 'flex', justifyContent: 'center', position: 'relative'}}>
        <IconButton
          variant="contained"
          className={classes.button}
